@@ -1,0 +1,324 @@
+---
+title: "Vax Regressions"
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999),
+                      eval = FALSE,
+                      include = FALSE)
+library(tidyverse)
+```
+
+# Data
+
+```{r data, include=FALSE, eval=TRUE}
+data <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv()
+  
+```
+
+## county benchmark data
+
+```{r include=FALSE}
+here::here("data", "social-capital-project-social-capital-index-data .xlsx") %>% 
+  readxl::read_xlsx(sheet = "County Benchmarks", skip = 2) %>% 
+  janitor::clean_names() %>% 
+  select(-c(starts_with("x"), alt_fips_code, contains("county"), state, contains("state_abbreviation"))) %>% 
+  rename(fips = fips_code)
+```
+
+# Descriptive Statistics
+
+```{r descriptive-stats}
+data %>% 
+  select(where(is.numeric)) %>% 
+  summarytools::descr()
+```
+
+
+
+
+# Regression Explorlation
+
+```{r days-on-str-index-w-controls}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(days ~ stringency * county_level_index + median_household_income + 
+       percent_adults_with_ba + percent_in_fair_or_poor_health + 
+       percent_black + percent_rural, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+```
+
+```{r days-on-rep-w-controls}
+data %>%
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>%
+  lm(
+    days ~ republican_percent * county_level_index +
+      median_household_income + percent_adults_with_ba +
+      percent_in_fair_or_poor_health + percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE,
+               digits = 4,
+               vifs = TRUE)
+```
+
+```{r days-both-no-controls}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(days ~ republican_percent * county_level_index, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(days ~ stringency * county_level_index, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+```
+
+```{r days-both-same-eq}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(days ~ stringency * county_level_index + 
+       republican_percent * county_level_index, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+```
+
+```{r days-all-interacted}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(days ~ stringency * county_level_index * republican_percent
+       , .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+```
+
+```{r series-comp-each-no-controls}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  lm(series_complete_pop_pct ~ republican_percent * county_level_index, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+```
+
+```{r series-comp-each-w-controls}
+data %>%
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>%
+  lm(
+    series_complete_pop_pct ~ stringency * county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE,
+               digits = 4,
+               vifs = TRUE)
+
+data %>%
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>%
+  lm(
+    series_complete_pop_pct ~ republican_percent * county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE,
+               digits = 4,
+               vifs = TRUE)
+```
+
+```{r series-comp-interacted-independently}
+data %>%
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>%
+  lm(
+    series_complete_pop_pct ~ stringency * county_level_index +
+      county_level_index * republican_percent
+    ,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE,
+               digits = 4,
+               vifs = TRUE)
+```
+
+```{r series-comp-iv-reg-days-and-series-comp-no-republican}
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  ivreg::ivreg(series_complete_pop_pct ~ stringency * county_level_index | median_household_income + 
+       percent_adults_with_ba + percent_in_fair_or_poor_health + 
+       percent_black + percent_rural + average_temperature, data = .) %>% 
+  summary()
+
+data %>% 
+  mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+           stay_at_home_days) %>% 
+  ivreg::ivreg(days ~ stringency * county_level_index | median_household_income + 
+       percent_adults_with_ba + percent_in_fair_or_poor_health + 
+       percent_black + percent_rural + average_temperature, data = .) %>% 
+  summary()
+```
+
+
+# Vax Regressions
+
+## No controls stringency broken out stringency level w/ county index and republican and penn-state 
+
+```{r all-social-k-regressions-for-stringency-and-rep-all-variants-of-days, eval=TRUE, include=TRUE}
+# data %>% 
+#   mutate(stringency = bar_days + gathering_days + mask_days + restaurant_days +
+#            stay_at_home_days) %>% 
+#   lm(series_complete_pop_pct ~ stringency * county_level_index, .) %>% 
+#   jtools::summ(robust = TRUE, digits = 4, vifs =TRUE)
+
+formula <- c(series_complete_pop_pct ~ stringency * county_level_index, 
+             series_complete_pop_pct ~ bar_days * county_level_index,
+             series_complete_pop_pct ~ gathering_days * county_level_index,
+             series_complete_pop_pct ~ mask_days * county_level_index,
+             series_complete_pop_pct ~ restaurant_days * county_level_index,
+             series_complete_pop_pct ~ stay_at_home_days * county_level_index,
+             series_complete_pop_pct ~ stringency * penn_state_index, 
+             series_complete_pop_pct ~ bar_days * penn_state_index,
+             series_complete_pop_pct ~ gathering_days * penn_state_index,
+             series_complete_pop_pct ~ mask_days * penn_state_index,
+             series_complete_pop_pct ~ restaurant_days * penn_state_index,
+             series_complete_pop_pct ~ stay_at_home_days * penn_state_index,
+             series_complete_pop_pct ~ stringency * republican_percent, 
+             series_complete_pop_pct ~ bar_days * republican_percent,
+             series_complete_pop_pct ~ gathering_days * republican_percent,
+             series_complete_pop_pct ~ mask_days * republican_percent,
+             series_complete_pop_pct ~ restaurant_days * republican_percent,
+             series_complete_pop_pct ~ stay_at_home_days * republican_percent
+)
+
+output <- 
+  tibble(formula) %>% 
+  mutate(model = map(formula, ~lm(formula = .x, data = data)))
+         # tidy = map(model, broom::tidy))
+
+# output %>%
+#   unnest(tidy) %>% 
+#   select(term:p.value) %>% 
+#   mutate(across(where(is.numeric), round, 5))
+
+output$model %>% 
+  map(jtools::summ, digits = 4, robust = TRUE)
+
+```
+
+## both variables no controls with robustness checks penn-state index
+
+```{r series-comp-both-rep-soc_k, eval=TRUE, include=TRUE}
+formula <-
+  c(
+    series_complete_pop_pct ~ stringency * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ bar_days * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ gathering_days * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ mask_days * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ restaurant_days * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ stay_at_home_days * county_level_index + republican_percent * county_level_index,
+    series_complete_pop_pct ~ stringency * penn_state_index + republican_percent * penn_state_index,
+    series_complete_pop_pct ~ bar_days * penn_state_index + republican_percent * penn_state_index,
+    series_complete_pop_pct ~ gathering_days * penn_state_index + republican_percent * penn_state_index,
+    series_complete_pop_pct ~ mask_days * penn_state_index + republican_percent * penn_state_index,
+    series_complete_pop_pct ~ restaurant_days * penn_state_index + republican_percent * penn_state_index,
+    series_complete_pop_pct ~ stay_at_home_days * penn_state_index + republican_percent * penn_state_index
+  )
+
+
+output <- 
+  tibble(formula) %>% 
+  mutate(model = map(formula, ~lm(formula = .x, data = data)))
+
+output$model %>% 
+  map(jtools::summ, digits = 4, robust = TRUE)
+
+```
+
+## controls added to each model
+
+```{r with-controls, eval=TRUE, include=TRUE}
+data %>%
+  lm(
+    days ~ stringency * county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE, digits = 4)
+
+data %>%
+  lm(
+    days ~ republican_percent * county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE, digits = 4)
+
+data %>%
+  lm(
+    days ~ stringency * county_level_index +
+      stringency * republican_percent + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>%
+  jtools::summ(robust = TRUE, digits = 4)
+```
+
+## controls as IV
+
+```{r iv-regs, eval=TRUE, include=TRUE}
+ivreg::ivreg(
+  series_complete_pop_pct ~ stringency * county_level_index | median_household_income +
+    percent_adults_with_ba + percent_in_fair_or_poor_health +
+    percent_black + percent_rural,
+  data = data
+) %>%
+  summary()
+
+ivreg::ivreg(
+  series_complete_pop_pct ~ stringency * republican_percent | median_household_income +
+    percent_adults_with_ba + percent_in_fair_or_poor_health +
+    percent_black + percent_rural,
+  data = data
+) %>%
+  summary()
+
+ivreg::ivreg(
+  series_complete_pop_pct ~ stringency * county_level_index +
+    stringency * republican_percent |
+    median_household_income +
+    percent_adults_with_ba + percent_in_fair_or_poor_health +
+    percent_black + percent_rural,
+  data = data
+) %>%
+  summary()
+
+```
+

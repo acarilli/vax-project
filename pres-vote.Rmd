@@ -1,0 +1,69 @@
+---
+title: "President Vote"
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+# Presidential Data
+
+```{r data}
+here::here("data", "countypres_2000-2020.csv") %>% 
+  read_csv() %>% 
+  filter(year == 2020,
+         mode != "TOTAL") %>% 
+  select(-c(year, office, state, version, party)) %>%
+  group_by(county_fips, candidate) %>% 
+  mutate(votes = sum(candidatevotes)) %>% 
+  relocate(votes, .after = candidatevotes) %>% 
+  ungroup() %>% 
+  distinct(state_po, county_fips, candidate, votes) %>% 
+  mutate(county_fips = str_pad(county_fips, 5, "left", 0)) %>% 
+  arrange(state_po) %>% 
+  filter(state_po == "AL")
+```
+
+```{r}
+here::here("data", "countypres_2000-2020.csv") %>% 
+  read_csv() %>% 
+  janitor::clean_names() %>%
+  filter(year == 2020, mode == "TOTAL") %>% 
+  select(state = state_po, county = county_name, fips = county_fips,
+         candidate, party, candidate_votes = candidatevotes,
+         total_votes = totalvotes) %>% 
+  # filter(party == "REPUBLICAN") %>% 
+  distinct(state)
+```
+
+```{r}
+here::here("data", "countypres_2000-2020.csv") %>% 
+  read_csv() %>% 
+  filter(year == 2020, party == "REPUBLICAN") %>% 
+  select(state = state_po, county = county_name, fips = county_fips, 
+         candidate_votes = candidatevotes, total_votes = totalvotes) %>% 
+  group_by(fips) %>% 
+  mutate(votes = sum(candidate_votes)) %>% 
+  distinct(state, county, fips, votes, total_votes) %>% 
+  mutate(republican_percent = 100 * votes / total_votes) %>% 
+  select(fips, republican_percent) %>% 
+  write_csv("data/republican_president.csv")
+  
+```
+
+```{r}
+here::here("data", "countypres_2000-2020.csv") %>% 
+  read_csv() %>% 
+  filter(year == 2020, party == "REPUBLICAN", county_fips == "13173")
+```
+

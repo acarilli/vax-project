@@ -1,0 +1,30 @@
+---
+title: ""
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+# Penn State Social K
+
+```{r read-csv}
+here::here("data", "social capital variables spreadsheet.12-8-17.xlsx") %>% 
+  readxl::read_xlsx() %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub("20", "_20", .x)) %>% 
+  mutate(fips = str_pad(as.character(fips), 5, "left", "0")) %>% 
+  select(fips, sk_2014) %>% 
+  write_csv("data/penn-state-social-k.csv")
+```
+

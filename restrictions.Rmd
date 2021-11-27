@@ -1,0 +1,267 @@
+---
+title: ""
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999),
+                      eval = FALSE,
+                      message = FALSE)
+library(tidyverse)
+```
+
+# APIs and Descriptions 
+
+## U.S. State and Territorial Gathering Bans: March 11-December 31, 2020 by County by Day
+
+<https://data.cdc.gov/Policy-Surveillance/U-S-State-and-Territorial-Gathering-Bans-March-11-/7xvh-y5vh>
+
+```{r}
+## U.S. State and Territorial Gathering Bans: March 11-December 31, 2020 by County by Day
+gathering_bans <- 
+  jsonlite::fromJSON("https://data.cdc.gov/resource/7xvh-y5vh.json")
+```
+
+
+## U.S. State and Territorial Stay-At-Home Orders: March 15 -- December 31 by County by Day
+
+<https://data.cdc.gov/Policy-Surveillance/U-S-State-and-Territorial-Stay-At-Home-Orders-Marc/y2iy-8irm>
+
+```{r}
+## U.S. State and Territorial Stay-At-Home Orders: March 15 – December 31 by County by Day
+jsonlite::fromJSON("https://data.cdc.gov/resource/y2iy-8irm.json")
+```
+
+## U.S. State and Territorial Public Mask Mandates From April 10, 2020 through April 28, 2021 by County by Day
+
+<https://data.cdc.gov/Policy-Surveillance/U-S-State-and-Territorial-Public-Mask-Mandates-Fro/62d6-pm5i>
+
+```{r}
+jsonlite::fromJSON("https://data.cdc.gov/resource/62d6-pm5i.json")
+```
+
+## U.S. State and Territorial Orders Closing and Reopening Bars Issued from March 11, 2020 through December 31, 2020 by County by Day
+
+<https://data.cdc.gov/Policy-Surveillance/U-S-State-and-Territorial-Orders-Closing-and-Reope/9kjw-3miq>
+
+```{r}
+jsonlite::fromJSON("https://data.cdc.gov/resource/9kjw-3miq.json")
+```
+
+## U.S. State and Territorial Orders Closing and Reopening Restaurants Issued from March 11, 2020 through December 31, 2020 by County by Day
+
+<https://data.cdc.gov/Policy-Surveillance/U-S-State-and-Territorial-Orders-Closing-and-Reope/azmd-939x>
+
+```{r}
+jsonlite::fromJSON("https://data.cdc.gov/resource/azmd-939x.json") %>% 
+  select(-1:-5) %>% 
+  select(-contains("date")) %>% 
+  unique()
+```
+
+
+# Read CSV Files
+
+## Gathering bans
+
+```{r gathering-code}
+# gathering_bans <-
+  here::here(
+    "data",
+    "U.S._State_and_Territorial_Gathering_Bans__March_11-December_31__2020_by_County_by_Day.csv"
+  ) %>% 
+  read_csv() %>% 
+  janitor::clean_names() %>% 
+  distinct(general_gb_order_group, general_gb_order_code) %>% 
+  arrange(general_gb_order_code)
+```
+
+```{r}
+gathering_bans %>% 
+  distinct(general_gb_order_group, general_gb_order_code) %>% 
+  arrange(general_gb_order_code)
+```
+
+
+```{r gathering-bans, eval=TRUE}
+gathering_bans <- 
+ here::here(
+    "data",
+    "U.S._State_and_Territorial_Gathering_Bans__March_11-December_31__2020_by_County_by_Day.csv"
+  ) %>% 
+  read_csv(show_col_types = FALSE) %>% 
+  janitor::clean_names() %>% 
+  mutate(fips = str_c(fips_state, fips_county)) %>% 
+  select(
+    state = state_tribe_territory,
+    county = county_name,
+    fips,
+    date,
+    general_gb_order_code
+    ) %>% 
+  mutate(gathering_ban = ifelse(general_gb_order_code == 1, 0 , 1)) %>% 
+  # group_by(fips) %>% 
+  # mutate(days = mean(gathering_ban)) %>% 
+  # summarize(mean(days))
+  # filter(state == "VA") %>% 
+  group_by(fips) %>% 
+  mutate(gathering_days = sum(gathering_ban)) %>% 
+  ungroup() %>% 
+  select(state, county, fips, gathering_days) %>% 
+  distinct(fips, .keep_all = TRUE)
+```
+
+## Stay at Home orders
+
+```{r stay-at-home-data}
+here::here(
+  "data", 
+  "U.S._State_and_Territorial_Stay-At-Home_Orders__March_15___December_31_by_County_by_Day.csv"
+  ) %>% 
+  read_csv() %>% 
+  janitor::clean_names() %>% 
+  distinct(current_order_status, order_code)
+
+# %>%
+#   mutate(fips = str_c(fips_state, fips_county)) %>% 
+#   select(state = state_tribe, count_name, fips,
+#          current_order_stats, order_code)
+```
+Code any mandatory as 1 No order and advisory as 0
+
+```{r stay-at-home-orders, eval=TRUE}
+stay_at_home_orders <- 
+here::here(
+  "data", 
+  "U.S._State_and_Territorial_Stay-At-Home_Orders__March_15___December_31_by_County_by_Day.csv"
+  ) %>% 
+  read_csv(show_col_types = FALSE) %>% 
+  janitor::clean_names() %>% 
+   mutate(fips = str_c(fips_state, fips_county)) %>% 
+  mutate(stay_at_home_days = 
+           case_when(
+             order_code == 7 ~ 0,
+             order_code == 1 ~ 1,
+             order_code == 6 ~ 0,
+             order_code == 2 ~ 1,
+             order_code == 3 ~ 1,
+             order_code == 5 ~ 1
+           )) %>% 
+  group_by(fips) %>% 
+  mutate(stay_at_home_days = sum(stay_at_home_days)) %>% 
+  ungroup() %>% 
+  select(state = state_tribe_territory, county = county_name, fips, stay_at_home_days) %>% 
+  distinct(fips, .keep_all = TRUE)
+```
+
+
+
+## Masks
+
+```{r}
+mask_days <- 
+here::here(
+  "data",
+  "U.S._State_and_Territorial_Public_Mask_Mandates_From_April_10__2020_through_April_28__2021_by_County_by_Day.csv"
+) %>%
+  read_csv() %>%
+  janitor::clean_names() %>% 
+  mutate(date = as.Date(lubridate::mdy_hms(date))) %>% 
+  distinct(order_code, current_order_status)
+```
+
+
+```{r mask-mandates, eval=TRUE}
+mask_mandates <- 
+here::here(
+  "data",
+  "U.S._State_and_Territorial_Public_Mask_Mandates_From_April_10__2020_through_April_28__2021_by_County_by_Day.csv"
+) %>%
+  read_csv(show_col_types = FALSE) %>%
+  janitor::clean_names() %>%
+  mutate(date = as.Date(lubridate::mdy_hms(date)),
+    fips = str_c(
+      str_pad(as.character(fips_state), 2, "left", "0"),
+      str_pad(as.character(fips_county), 3, "left", "0")
+    ),
+    order_code = if_else(order_code == 2, 0, 1)
+    ) %>% 
+  filter(date < "2021-01-01") %>% 
+  group_by(fips) %>% 
+  mutate(mask_days = sum(order_code)) %>% 
+  ungroup() %>% 
+  select(state=state_tribe_territory, county = county_name, fips, mask_days) %>% 
+  distinct(fips, .keep_all = TRUE)
+```
+
+
+## Bars
+
+```{r bar-closures, eval=TRUE}
+bar_closures <- 
+here::here(
+  "data",
+  "U.S._State_and_Territorial_Orders_Closing_and_Reopening_Bars_Issued_from_March_11__2020_through_December_31__2020_by_County_by_Day.csv"
+) %>% 
+  read_csv(show_col_types = FALSE) %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    date = as.Date(lubridate::mdy_hms(date)),
+    fips = str_c(
+      str_pad(as.character(fips_state), 2, "left", "0"),
+      str_pad(as.character(fips_county), 3, "left", "0")
+    ),
+    order_code = if_else(order_code %in% c(1, 2, 3), 0, 1)
+  ) %>% 
+  group_by(fips) %>% 
+  mutate(bar_days = sum(order_code)) %>% 
+  ungroup() %>% 
+  select(state = state_tribe_territory, county = county_name, fips, bar_days) %>% 
+  distinct(fips, .keep_all = TRUE)
+  
+```
+
+## Restaurants
+
+```{r restaurant-closures, eval=TRUE}
+restaurant_closures <- 
+here::here(
+  "data",
+  "U.S._State_and_Territorial_Orders_Closing_and_Reopening_Restaurants_Issued_from_March_11__2020_through_December_31__2020_by_County_by_Day.csv"
+) %>%
+  read_csv(show_col_types = FALSE) %>%
+  janitor::clean_names() %>%
+  mutate(
+    date = as.Date(lubridate::mdy_hms(date)),
+    fips = str_c(
+      str_pad(as.character(fips_state), 2, "left", "0"),
+      str_pad(as.character(fips_county), 3, "left", "0")
+    ),
+    order_code = if_else(order_code %in% c(1, 2, 3), 0, 1)
+  ) %>%
+  group_by(fips) %>% 
+  mutate(restaurant_days = sum(order_code)) %>% 
+  ungroup() %>% 
+  select(state = state_tribe_territory, county = county_name, fips, restaurant_days) %>% 
+  distinct(fips, .keep_all = TRUE)
+```
+
+# Create restrictions data
+
+```{r restriction-data, eval=TRUE}
+bar_closures %>% 
+  left_join(gathering_bans) %>% 
+  left_join(mask_mandates) %>% 
+  left_join(restaurant_closures) %>% 
+  left_join(stay_at_home_orders) %>% 
+  write_csv(file = "data/restriction_days.csv")
+```
+

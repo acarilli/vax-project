@@ -1,0 +1,114 @@
+---
+title: "Vaccine Data"
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+
+[https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-County/8xkx-amqh]
+
+
+# Vaccines
+
+Days to achieve 50% vax rate.
+
+```{r}
+  here::here("data",
+             "COVID-19_Vaccinations_in_the_United_States_County.csv") %>%
+  read_csv(show_col_types = FALSE) %>% 
+  arrange(Date, FIPS) %>% 
+  janitor::clean_names() %>% 
+  filter(series_complete_pop_pct >= 50) %>% 
+  select(date, fips, county = recip_county, state = recip_state, series_complete_pop_pct) %>% 
+  group_by(fips) %>% 
+  filter(series_complete_pop_pct == min(series_complete_pop_pct)) %>% 
+  distinct(fips, .keep_all = TRUE) %>% 
+  ungroup() %>%
+  mutate(date = format(as.Date(date, "%m/%d/%Y")),
+         days = lubridate::yday(date))
+```
+
+Create data frame with days
+
+```{r}
+# read data and select relevant series create data frame to speed up calculation.
+data <- 
+ here::here("data",
+             "COVID-19_Vaccinations_in_the_United_States_County.csv") %>%
+  read_csv(show_col_types = FALSE) %>% 
+  arrange(Date, FIPS) %>% 
+  janitor::clean_names() %>% 
+  select(date, fips, county = recip_county, state = recip_state, series_complete_pop_pct) %>% 
+  mutate(date = format(as.Date(date, "%m/%d/%Y")))
+
+# find days to get to 50% include counties that haven't reached 50%
+
+data_with_50_percent <-
+  data %>%
+  filter(series_complete_pop_pct >= 50) %>%
+  group_by(fips) %>%
+  filter(series_complete_pop_pct == min(series_complete_pop_pct)) %>%
+  distinct(fips, .keep_all = TRUE) %>%
+  mutate(days = lubridate::yday(date) + 15) %>% 
+  select(-date) %>% 
+  ungroup()
+    
+    
+```
+
+Find unique FIPS to rejoin with states with days
+
+```{r}
+data_all_counties <-
+  data %>%
+  filter(date == "2021-09-30") %>% 
+  # distinct(fips, .keep_all = TRUE) %>%
+  select(-date)
+```
+
+
+Join data sets
+
+```{r}
+# data_with_50_percent %>% 
+#   full_join(data_all_counties) %>% 
+#   distinct(fips, .keep_all = TRUE) %>% 
+#   arrange(fips) %>% 
+#   mutate(days = 291 - days,
+#          days = replace_na(days, 0)) %>% 
+#   write_csv("data/vax-data.csv")
+#   
+  
+# data %>% 
+#   summarise(min(date),
+#             max(date))
+# 
+# data %>% 
+#   summarise(max(lubridate::ymd(date)) - min(lubridate::ymd(date)))
+```
+make series-complete_pop_pct value on 9/30
+
+```{r}
+data_with_50_percent %>% 
+  select(-series_complete_pop_pct) %>% 
+  full_join(data_all_counties) %>% 
+  distinct(fips, .keep_all = TRUE) %>% 
+  arrange(fips) %>% 
+  mutate(days = 291 - days,
+         days = replace_na(days, 0)) %>% 
+  write_csv("data/vax-data.csv")
+
+```
+
