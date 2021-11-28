@@ -261,7 +261,7 @@ output$model %>%
 ```{r with-controls, eval=TRUE, include=TRUE}
 data %>%
   lm(
-    days ~ stringency * county_level_index + median_household_income +
+    series_complete_pop_pct ~ stringency * county_level_index + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
     .
@@ -270,7 +270,7 @@ data %>%
 
 data %>%
   lm(
-    days ~ republican_percent * county_level_index + median_household_income +
+    series_complete_pop_pct ~ republican_percent * county_level_index + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
     .
@@ -279,7 +279,7 @@ data %>%
 
 data %>%
   lm(
-    days ~ stringency * county_level_index +
+    series_complete_pop_pct ~ stringency * county_level_index +
       stringency * republican_percent + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
