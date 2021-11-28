@@ -1,0 +1,190 @@
+---
+title: "Jabbing Together?"
+subtitle: The Complementarity Between Social Capital, Formal Public Health Rules, and COVID-19 Vaccine Rates in the United States
+author: "Byron Carson, Justin Isaacs, and Tony Carilli"
+output:
+  pdf_document: default
+  word_document: default
+abstract: COVID-19 vaccine rates provides a unique opportunity to explore the interactive effect between individual values---for public health and/or personal freedom---and social capital. While economists and public health scholars realize the independent effects social capital and stringent public health rules have on prevalence and mortality rates, few recognize how these factors influence vaccination rates. We advance this literature with a novel framework to analyze the interaction between the two. With county-level data on COVID-19 vaccinations, measures of the values people have for personal freedom and public health, and social capital, we find that vaccination rates depend on individual values, the level of social capital, and the interaction between the two. Social capital mediates the values people hold dear, which can influence vaccination rates in positive and negative ways. Our results are robust to the inclusion of relevant controls and alternative measures of social capital. These results suggest that individuals and the communities people enter into and exit out of play an important role in decisions to vaccinate, which are independent of formal, governmental public health measures. 
+header-includes: \usepackage{setspace}\doublespacing
+bibliography: vaccines.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+\newpage
+
+# Introduction
+
+Vaccine hesitancy---among parents, among healthcare professional, and for particular diseases---is an on-going public health concern [@macdonald_vaccine_2015]. As useful as vaccines are, people eschew them for many reasons [@dube_vaccine_2013; @ozawa_public_2013; @yaqub_attitudes_2014; @karafillakis_vaccine_2016; @cadeddu_understanding_2021]. While there are various definitions of vaccine hesitancy, there is no single set of factors that consistently explains differences in hesitancy or identifies policies to improve hesitancy [@larson_understanding_2014; @eskola_how_2015].[^1]
+
+[^1]: Vaccine hesitancy is "A behaviour, influenced by a number of factors including issues of confidence [do not trust a vaccine or provider], complacency [do not perceive a need for a vaccine, do not value the vaccine], and convenience [access]" [@larson_understanding_2014: 2151].
+
+With the advent of the COVID-19 vaccines, hesitancy is still a pressing concern especially for minority populations [@hildreth_targeting_2021; @khubchandani_covid-19_2021]. Yet, there is still little consensus regarding the determinants of hesitancy. Christian Nationalism is correlated with hesitancy [@corcoran_christian_2021], as is socio-economic variables [@mollalo_spatial_2021]. Hesitancy also remains high in high-income countries, especially among younger, poorer, female, non-White, and less educated groups [@aw_covid-19_2021]. Similarly, @hudson_predictors_2021 shows that while age, income, education, parental status, rurality, trust in authority, disgust sensitivity, and risk aversion can explain COVID-19 vaccination rates, but these results are tentative---given the lack of peer-review work---and the novelty of our experiences with the COVID-19 vaccines. Moreover, studies that rely on theories of planned behavior consistently explain differences in hesitancy [@xiao_vaccine_2020]. Yet, factors like education are correlated with hesitancy in some countries but not in others [@lazarus_hesitant_2020].
+
+A related strand of public health research explores the role social capital---a kind of informal, social norm---plays in health promotion and disease prevention. The influence social capital has on health outcomes in general is well-studied [see, for example, @putnam_bowling_2001], as is the influence social capital has on the spread of COVID-19 [@imbulana_arachchi_role_2021; @pitas_social_2020; @wong_social_2020; @borgonovi_evolution_2021]. At the county level in the U.S. between March and July of 2020, @makridis_how_2021 isolate the effect social capital and its components have on rates of COVID-19 prevalence and mortality with standard empirical techniques, e.g., state fixed effects that might attenuate omitted variable bias and alternative measures of social capital. They report that the spread of COVID-19 falls by 18 percent (and deaths fall by 5.7 percent) as counties increase their social capital from the 25th percentile to the 75th percentile.
+
+The effect social capital has on COVID-19 vaccine hesitancy remains under explored. Previous work shows that people with higher levels of social capital are more likely to take a second-round measles vaccine [@nawa_association_2019; @nagaoka_income_2012]. Similarly, social capital influences vaccines for pneumonia among elderly populations in Japan [@iwai-saito_social_2021]. Various measures of social capital also influence influenza vaccine rates in Taiwan [@chuang_social_2015], and with H1N1 in Scandinavia [@ronnerstrand_social_2013; @ronnerstrand_social_2014] [also, see @jung_associations_2013].
+
+This paper examines the interactions between individual values, social capital, and formal public health rules and their effects on COVID-19 vaccination rates. Importantly, we recognize the neutrality of social capital. That is, while social capital might encourage the use of interpersonal networks to care for one another and provide support from a distance, it can also reinforce beliefs within a community that prioritize personal freedom over public health. Following \@@carson_covid_2021 and their framework on the interactions between individual values, formal public health rules, and social capital, we develop a framework to 1) assess the conditions under which social capital influences the magnitude of vaccination, and 2) compare the effects social capital has on vaccination relative to more formal public health regulations and a community's taste for public health versus private freedom.
+
+With over one year's worth of county-level, daily data on COVID-19 cases, social capital, and regulatory stringency in the United States, we build a panel model to assess these relative effects.[^2] Our main result is that counties with stronger social capital (relative to the average) and higher values for COVID-19 prevention (relative to the average) are less hesitant and are faster to use vaccines. Our results are robust across measured sub-components of social capital, to the inclusion of standard controls, and alternative measures of social capital. These results suggest that formal rules and informal social capital---and their interactions---play identifiable roles in the use of vaccines as a preventative measure in the fight against the spread of COVID-19.
+
+[^2]: We use the stringency measure to show the severity of formal public health measures and as a proxy for the values people within a state have for COVID-19 prevention.
+
+# Values, Social Capital, and COVID-19
+
+This section summarizes the social capital framework of @carson_covid_2021 in order to explain our results. Generally, social capital encourages people to trust each other, which encourages various kinds of cooperation and even private health outcomes. People with greater social capital might have more financial resources, e.g., charity; they might have greater access to organizations that lower the cost of health care; they might be constrained by social norms that influence health; and they might have a greater ability to engage in political action [@putnam_bowling_2001].
+
+We argue that social capital complements the values people have for prevention and the subsequent actions they adopt---rules, mandates, and vaccine use. We expect people to increase the magnitude of vaccination when 1) they place a higher value on prevention and 2) they have a higher level of social capital that reinforces such values, behaviors, and rules. To reiterate, this framework indicates the possibility of positive and negative public health outcomes. That is, areas can experience both a faster vaccination rate and a higher total amount of vaccination because of their general appreciation for public health over personal freedom and their higher level of social capital. At the same time, areas can experience a slower vaccination rate and a lower total amount of vaccination because of their general appreciation for personal freedom over public health and their higher level of social capital.
+
+Social capital reinforces preventative behaviors and vaccination in areas that value prevention; however, social capital reinforces infectious behaviors in areas that value personal freedom. Thus, the interaction between social capital and how people value public health over personal freedom become important determinants of the formal rules people favor, as well as their vaccination behaviors.
+
+We suggest the interaction between social capital, values for prevention, and formal rules influences the magnitude of vaccination because social capital raises the private costs to individuals of breaking the rules that a group perceives as legitimate, namely formal and informal public health rules. People with stronger levels of social capital are more likely to interact with each other---which can increase the spread of diseases like COVID-19---but they are also likely to follow public health suggestions and mandates they value [@carson_covid_2021]. The more people value disease prevention over other legitimate values like personal freedom, and the more they believe public health claims are also legitimate and valuable, breaking those rules is taken as an affront punishable informally by a personal rebuke, a worsening reputation, a refusal of service, or fewer social contacts. More formal measures of enforcement and punishment are also relevant, e.g., employer vaccination mandates and vaccine requirements to receive services in the "marketplace."[^3] Relatedly, people are better able to monitor the behavior of others in areas with stronger social capital and numerous social ties; this suggests that infractions are more likely to be discovered in areas with stronger social capital. Thus, as strong as values for prevention are and as severe as formal public health rules are, social capital will encourage individuals to engage in preventative behavior. All else equal, this interaction should increase the magnitude of vaccination.
+
+[^3]: Whereas formal rules specify a primary directive and secondary qualifiers, a centralized enforcement mechanism, and it is a rule derived from some form of governing body, informal rules may only specify some type of suggested directive with no formal enforcement mechanism and is a rule derived from normative attitudes [@brennan_explaining_2016].
+
+A person's normative beliefs and attitudes can raise (or lower) the value of preventative behavior, which can encourage (or discourage) vaccination, in addition to other kinds of prevention. People might value vaccination to improve their own health and the health of their friends and family. People might also legitimately value other goals over disease prevention, e.g., maintaining cultural practices, following religious observances, pursuing economic activity, and/or expressing political will. Given the values people have, then, the community and kind of social capital within which people pursue their individual and cooperative goals becomes relevant. That is, the quality, kind, or strength of social capital influences how well people achieve their goals, whatever those goals might be. Thus, the kinds (and amount) of bonds people form within and between groups acts to reinforce the perceptions and beliefs of the groups. In the context of COVID-19, communities with high levels of social capital should see their perceptions and values regarding public health extenuated. If a community values public health and has strong social ties then we would expect a high rate of vaccination. If a community has strong social ties but places a low value on public health (high value on personal freedom) then we would expect a low level of vaccination.
+
+Table 1 adapts Table 1 of @carson_covid_2021, p. 4, to visualize how these factors interact with each other and how they influence vaccination rates. The rows characterize groups by their normative beliefs and attitudes regarding prevention; individuals and groups in the top row place a higher value on public health and prevention relative to the average value while those in the bottom row place a lower value on prevention (higher value on personal freedom) relative to the average value. The columns characterize groups by the strength of their social capital; individuals and groups on the left have stronger social capital relative to the average amount of social capital while those on the right have weaker social capital relative to the average.
+
++------------------------------+--------------------------+-------------------------+
+|                              | Strong Social Capital    | Weak Social Capital     |
++==============================+==========================+=========================+
+| **High Value on Prevention** | I - Highest Vaccination  | II - Lower Vaccination  |
++------------------------------+--------------------------+-------------------------+
+| **Low Value on Prevention**  | III - Higher Vaccination | IV - Lowest Vaccination |
++------------------------------+--------------------------+-------------------------+
+
+: The Interaction between Social Capital and Values for Disease Prevention
+
+Thus, the interaction effect between values for prevention and social capital have on vaccination rates varies by quadrant. We expect the interaction effect between values for prevention and social capital to have the strongest effect on vaccination rates when people place a higher value on prevention, as demonstrated by the adoption of more stringent rules and restrictions early in the pandemic, and when they have stronger social capital (Quadrant 1). We expect the interaction effect between value for prevention and social capital to have the weakest effect on vaccination rates when 1) people place a lower value on preventative behavior and 2) people have weaker social capital (Quadrant IV).[^4]
+
+[^4]: It is possible that Quadrant III actually has the lowest vaccination rates because social capital can reinforce behaviors of personal freedom. We are assuming, however, that even communities with a "taste" for personal freedom will have greater desire to get vaccinated for their friends, family, and neighbors if they have a relatively higher level of social capital.
+
+The following testable propositions guide our analysis below:
+
+1.  People that place a higher value on prevention will have larger, positive effects on the magnitude of COVID-19 vaccinations than people that do not value prevention, all else equal.
+
+2.  People with stronger social capital will have larger, positive or negative, effects on the magnitude of COVID-19 vaccines than people with weaker social capital, all else equal.
+
+3.  People that place a higher value on prevention and have stronger social capital will have the largest, positive effect on the magnitude of COVID-19 vaccines, all else equal.
+
+# Data, Model, and Results
+
+We operationalize this framework in the context of COVID-19 by gathering data representing the rows and columns of Table 1. We then use ordinary least squares (OLS)---a standard empirical technique---to assess whether there is a statistical relationship between the values people have for personal freedom and/or public health and their social capital. We specify this relationship with two models.
+
+We measure the rows of Table 1---the values people have for personal freedom and public health---with two proxies. First, we construct an index that represents the values people hold for public health. This index (measured in number of days) represents how long people were under the strictest kinds of restrictions. Specifically we use bar closures, restrictions on gatherings, masking orders, restaurants closures, and stay-at-home orders. We assume that people in counties where there were additional municipal, county, and state level restrictions, place a higher value on public health. Second, we use the percentage of registered republican voters in a county who voted in the 2020 election as a proxy for the values people hold regarding personal freedom. We use this measure as it follows @adolph_pandemic_2021 and @baccini_explaining_2021 who find political affiliation of a governor influences the kind and timing of stringency measures.
+
+We measure the columns of Table 1---the level of social capital---using the Joint Economic Committee's (JEC) social capital project, which reports an index of social capital across 3,142 counties. This index measures four main variables: family unity, community health, institutional health, and collective efficacy.[^5] The JEC county-level index has a mean value of 0 and a scale between -4.3 and 2.9 that measures variance or how a county compares to other counties.
+
+[^5]: Family unity is an index of the following variables: the share of births to unmarried women, the share of women who are married, the share of children living in a single-parent family. Community Health is an index of registered non-religious non-profits per 1,000 people, the number of religious congregations per 1,000 people, and a sub-index of informal civil society. Institutional Health is an index of the average number of votes in the 2012 and 2016 presidential elections, the mail-back response rate in the 2010 census, and a sub-index of confidence in institutions. Collective Efficacy is the number of violent crimes per 100,000.
+
+The first model specifies the basic functional form between the values people have for personal freedom and/or public health and their social capital---with no control variables---given by:
+
+$$
+\begin{aligned}
+Vaccination_{it}=\gamma_0+\gamma_1(Individual\ Values)_{i,t-7}+\gamma_2(Social\ Capital)_{i,t}+\\ \gamma_3(Individual\ Values_{i, t-7}*Social\ Capital_{i,t}) + v_{i,t}
+\end{aligned}
+$$
+
+where we measure vaccination as the magnitude of vaccination, i.e., the percentage of a county vaccinated on August 31, 2021. As of that date people had had about 7-8 months to become vaccinated for a negligible monetary cost.[^6] This vaccination data was collected from the Center for Disease Control (CDC) COVID-19 Vaccination Surveillance Database.
+
+[^6]: The FDA issued an EUA on Dec. 11, 2020 for the Pfizer vaccine.
+
+In order to investigate the complementarity of formal rules and social capital we use an interaction term between individual values and the social capital index. This simple regression equation allows us to investigate our theoretical framework. That is, we can test our three propositions:
+
+1.  Do counties that have a higher desire for prevention have better vaccine outcomes?
+
+2.  Do counties that have stronger measured social capital scores have more desire to protect their "connections" and, thus, better vaccination rates?
+
+3.  Do counties with higher social capital and higher desire for preventative measures lead to even better vaccination outcomes?
+
+The second model adds a vector of controls to the first equation and is given by:
+
+$$
+\begin{aligned}
+Vaccination_{it}=\delta_0+\delta_1(Individual\ Values)_{i,t-7}+\delta_2Social\ Capital_{i,t}+\\ \delta_3(Individual\ Values_{i, t-7}*Social\ Capital_{i,t}) + X_{\eta j}Z_{i,t} + \omega_{i,t}
+\end{aligned}
+$$
+
+where $Z_{i,t}$ represents a vector of socio-demographic proxies. These variables attempt to control for factors that could possibly influence vaccination rates, as well as individual values and social capital. These control variables are median household income, the percentage of a county's adult population with a bachelor's degree, the percentage of a county's population in fair or poor health, the percentage of a county's population who are black, and the percentage of a county population living in a rural area. These socio-demographic measures were taken from the US Census American Community Survey (2019), the Bureau of Economic Analysis, and the Bureau of Labor Statistics. Other controls, like race, poverty and education level also have impacts that support previous research [@townsend_outcomes_2020; @yancy_covid-19_2020].
+
+Our sample dataset consists of 3,139 county-level observations. Table 2 provides the descriptive statistics of these variables.
+
+[Table 2 Here --- Descriptive Statistics]
+
+Table 3 presents results for the basic model and subsequent specifications, where the dependent variable is the magnitude of vaccination, i.e., the percentage vaccinated on August 31, 2021.
+
+[Table 3 Here---Equation 1 for values of public health, personal freedom, and together]
+
+Column 1 estimates equation 1 where individual values are the values for public health; Column 2 estimates equation 1 where individual values are the values for personal freedom; Column 3 estimates equation 1 with both measures of individual values.
+
+Column 1 in Table 3 provides the empirical results of equation 1 and supports our initial propositions. A one unit increase in the value for public health increases the magnitude of vaccination by 0.013%. A one standard deviation increase in social capital increases the magnitude vaccination by 2.40%. The interaction between values for public health and social capital increases the magnitude of vaccination by 0.002%. These results are statistically significant.
+
+Column 2 in Table 3 shows that a one unit increase in the value for personal freedom decreases the magnitude of vaccination by 0.597%. A one standard deviation in social capital increases the magnitude of vaccination by 8.57%. The interaction between percentage of republican voters and social capital decreases the magnitude of vaccination by 0.049%. All of the results in this model are statistically significant.
+
+Column 3 of Table 3 specifies the basic model with both measures of individual values, along with both interaction effects. A one unit increase in the value for public health increases magnitude of vaccination by 0.002%. A one unit increase in the values for personal freedom decreases the magnitude of vaccination by 0.586%. A one standard deviation increase in social capital increases the magnitude of vaccination by 6.96%. All of these variables are statistically significant.
+
+Moreover, the interaction terms of Column 3 of Table 3 have the expected effect and are statistically significant. The interaction term between social capital and values for public health increases the magnitude of vaccination by 0.001%, and the interaction term between social capital and values for personal freedom decreases the magnitude of vaccination by 0.038%.
+
+Table 4 presents our results as we add controls to the models in Table 3.
+
+[Table 4 Here - same as Table 3 but with controls]
+
+Column 1 of Table 4 provides the empirical results when we use the values for public health to measure individual values and other control variables. A one unit increase in the values for public health increases the magnitude of vaccination by 0.007%. A one standard deviation increase in social capital increases the magnitude of vaccination by .991%. The interaction between values for public health and social capital increases the magnitude of vaccination by .001%. These results are statistically significant.
+
+Median household income, the percentage of people with a bachelor's degree, the percentage of people in poor or fair health, the percent black, and the percent rural are also statistically significant. Whereas income, percent in poor or fair health, and percent rural negatively influence the magnitude of vaccination, education and percent black positively influence the magnitude of vaccination.
+
+Column 2 of Table 4 provides the results when we use the values for personal freedom to measure individual values and other control variables. A one unit increase in the values for personal freedom decreases the magnitude of vaccination by 0.656%. A one standard deviation increase in social capital increases the magnitude of vaccination by 3.26%. The interaction between values for personal freedom and social capital decrease the magnitude of vaccination, but this result is not statistically significant.
+
+Median household income, the percentage of people in poor or fair health, and the percent black are also statistically significant. All of these variables negatively influence the magnitude of vaccination.
+
+Column 3 of Table 4 provides the results when we analyze both measures of individual values, their respective interaction effects, and our control variables. A one unit increase in values for personal freedom negatively influences the magnitude of vaccination by 0.657% and is statistically significant. However, the values for public health positively influences the magnitude for vaccination, but it is not statistically significant. Social capital is also not statistically significant.
+
+Of the interaction effects, only the interaction between social capital and values for public health is significant with the expected sign. That is, the interaction increases the magnitude of vaccination by 0.003%.
+
+Median household income, the percentage of people in poor or fair health, and the percent black are also statistically significant. All of these variables negatively influence the magnitude of vaccination.
+
+This set of results lends support for the social capital framework discussed above. In particular, it suggests that social capital mediates the values people have and can amplify those values. Whereas people who value public health---and are more willing to use stringent public health measures---use social capital to have positive effects on the speed and magnitude of vaccination, people who value personal freedom---and who might be more hesitant towards public health---use social capital to have negative effects on the speed and magnitude of vaccination.
+
+# Robustness Checks
+
+Here we analyze the same models but with a different measure of county-level social capital, namely from Pennsylvania State. If there are any peculiarities or biases using the JEC social capital index, we should not expect those biases to remain with an alternative measure. Table 5 shows models 1 and 2 with this alternative measure of county-level social capital.
+
+[Table 5 here - Same as Table 3 but with Penn Social Capital]
+
+Column 1-3 of Table 5 show results that are consistent with Column 1-3 of Table 3, respectively. Column 1 of Table 5 shows that social capital and values for public health positively influence the magnitude of vaccination in the expected way. The interaction between social capital and values for public health, however, is not statistically significant. Column 2 of Table 5 shows that all three variables are statistically significant and have the expected sign. Column 3 of Table 5 shows that all variables except the interaction between social capital and values for public health are statistically significant and have the expected sign.
+
+The effect values for public health have on vaccination might be influenced by a particular measure used in its construction. Table 6 shows whether these five components alone have a similar effect on the magnitude of vaccination. We analyze these components using our baseline specification found in Column 1 of Table 3.
+
+[Table 6 here---disaggregated value for public health]
+
+As we disaggregate the values for public health, each component positively influences the magnitude of vaccination and is statistically significant. Moreover, social capital maintains its statistical significance although it varies in magnitude from 1.2 (when we use the number of days under restrictions on gatherings only) to 8.2 (when we use the number of days under restrictions on restaurants only).
+
+The interaction term, which becomes an interaction between social capital and the individual components of the value for public health, is statistically significant for each component, but the sign is not consistently positive like we would expect. That is, the interaction is positive---like the results in Column 1 of Table 3 show---when we use restrictions on gatherings, on masking, and on stay-at-home orders. The interaction term shows a negative effect when we use bar and restaurant closings.
+
+Using the Pennsylvania State measure of social capital, but with disaggregated measures of values for public health we find consistent results. Table 7 shows these results.
+
+[Table 7 here---disaggregated value for public health and penn state data]
+
+Each component maintains the expected sign and statistically significance. One slight difference is that the stay-at-home component loses some of its statistical significance. Social capital maintains its expected sign and remains consistently statistically significant, with a smaller magnitude. The interaction effects are only statistically significant for three of the components, i.e., bar and restaurant closures and mask ordinances.
+
+# Discussion and Conclusion
+
+Our framework and results show that the values people hold and their formal and informal rules influence vaccine hesitancy. Specifically, we formally analyze how the interaction between the values people have for personal freedom over public health and their social capital influences the magnitude of COVID-19 vaccinations. As we use different proxies for the values people have, different measures of social capital, and relevant control variables, we find suggestive evidence for our three main propositions: 1) counties where people have a larger value for public health experience more vaccinations, 2) counties where people have a higher level of social capital experience more vaccinations, and 3) counties where people have both a higher level of social capital and a higher value for public health experience more vaccination. The positive (negative) interaction between social capital and public health (personal freedom) supports the third proposition. Thus, we find that social capital mediates the values people have and encourages behaviors they find valuable; this might or might not encourage vaccinations and/or improvements in public health.
+
+We suggest that disease prevention policies focusing primarily on formal, stringent measures are misguided when planners ignore social capital and the values people have hold dear. Stringent measures are less effective when people have higher levels of social capital and when they value public health. Moreover, stringent measures might be a source of tension and less effective when people have higher levels of social capital and when they value personal freedom.
+
+While we show the interaction between social capital and the value people have for public health, there are no clear policy levers. No one person or group has the ability to alter social capital, change the percentage of republican voters, or maintain the effectiveness of stringent policies given individual values. Social capital emerges when individuals value participating in social interactions; it is not clear how governmental officials, let alone public health officials, can know or can influence such values and interactions. Even if officials could alter social capital, our results suggest such policies would be effective only when people already value prevention specifically and public health more generally.
+
+Lingering thoughts:
+
+[[[Can we do the same as Table 4 from original paper, e.g., the fitted values but with magnitude of vaccination?]]]
+
+\newpage
+
+References
