@@ -46,9 +46,6 @@ data %>%
   summarytools::descr()
 ```
 
-
-
-
 # Regression Explorlation
 
 ```{r days-on-str-index-w-controls}
@@ -264,7 +261,7 @@ output$model %>%
 ```{r with-controls, eval=TRUE, include=TRUE}
 data %>%
   lm(
-    days ~ stringency * county_level_index + median_household_income +
+    series_complete_pop_pct ~ stringency * county_level_index + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
     .
@@ -273,7 +270,7 @@ data %>%
 
 data %>%
   lm(
-    days ~ republican_percent * county_level_index + median_household_income +
+    series_complete_pop_pct ~ republican_percent * county_level_index + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
     .
@@ -282,7 +279,7 @@ data %>%
 
 data %>%
   lm(
-    days ~ stringency * county_level_index +
+    series_complete_pop_pct ~ stringency * county_level_index +
       stringency * republican_percent + median_household_income +
       percent_adults_with_ba + percent_in_fair_or_poor_health +
       percent_black + percent_rural,
@@ -320,5 +317,74 @@ ivreg::ivreg(
 ) %>%
   summary()
 
+```
+
+## Social K and republican
+
+### Social K republican and interaction
+
+```{r series-complete-socialk-interact-rep, include=TRUE, eval=TRUE}
+formula <-
+  c(
+    series_complete_pop_pct ~ republican_percent * county_level_index,
+    series_complete_pop_pct ~ republican_percent * penn_state_index,
+    series_complete_pop_pct ~ republican_percent * county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    series_complete_pop_pct ~ republican_percent * penn_state_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural
+  )
+
+output <-
+  tibble(formula) %>%
+  mutate(model = map(formula, ~ lm(formula = .x, data = data)))
+# tidy = map(model, broom::tidy))
+
+output$model %>%
+  map(jtools::summ, digits = 4, robust = TRUE)
+```
+
+
+### No controls
+
+```{r series-complete-rep-socialk-no-controls, include=TRUE, eval=TRUE}
+data %>%
+  lm(
+    series_complete_pop_pct ~ stringency * county_level_index +
+      republican_percent * county_level_index,
+    .
+  ) %>%
+  jtools::summ(digits = 4, robust = TRUE)
+
+```
+
+### Controls
+
+```{r series-complete-rep-socialk-controls, include=TRUE, eval=TRUE}
+data %>%
+  lm(
+    series_complete_pop_pct ~ stringency * county_level_index +
+      republican_percent * county_level_index +
+      median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_black + percent_rural,
+    .
+  ) %>% 
+  jtools::summ(digits = 4, robust = TRUE)
+```
+
+### IV
+
+```{r series-complete-rep-socialk-iv, include=TRUE, eval=TRUE}
+ivreg::ivreg(
+  series_complete_pop_pct ~ stringency * county_level_index +
+    republican_percent * county_level_index +
+    median_household_income +
+    percent_adults_with_ba + percent_in_fair_or_poor_health +
+    percent_black + percent_rural,
+  data = data
+) %>%
+  summary()
 ```
 
