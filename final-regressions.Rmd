@@ -1,0 +1,167 @@
+---
+title: "Final Regressions"
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+```{r data}
+data <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv()
+```
+
+```{r table-3}
+
+#columns fucked up try with stargazer
+
+jtools::export_summs(
+# stargazer::stargazer(
+  data %>%
+    lm(series_complete_pop_pct ~ stringency + county_level_index +
+         I(stringency * county_level_index), .),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent + county_level_index + 
+        I(republican_percent * county_level_index),
+      .
+    ),
+  # data %>% 
+  #   lm(series_complete_pop_pct ~ republican_percent * county_level_index +
+  #         stringency * county_level_index, .),
+  data %>% 
+    lm(series_complete_pop_pct ~ republican_percent + county_level_index + stringency + 
+         I(republican_percent * county_level_index) + I(stringency * county_level_index), .),
+  # type = "text"
+  digits = 4,
+  robust = TRUE,
+  coefs = c(
+    "C" = "(Intercept)",
+    "Public Health" = "stringency",
+    "Social K" = "county_level_index",
+    "Stringency interacted with Social K" = "I(stringency * county_level_index)",
+    "Personal Freedom" = "republican_percent",
+    "Personal Freedom with Social K" = "I(republican_percent * county_level_index)"
+  )
+)
+```
+
+```{r table-4}
+jtools::export_summs(
+  data %>%
+    lm(
+      series_complete_pop_pct ~ stringency * county_level_index +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent * county_level_index + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ stringency * county_level_index +
+        republican_percent * county_level_index
+      +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  digits = 4,
+  robust = TRUE
+  
+)
+```
+
+
+```{r table-5-penn-index}
+ 
+jtools::export_summs(
+  data %>%
+    lm(series_complete_pop_pct ~ stringency * penn_state_index, .),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent * penn_state_index,
+      .
+    ),
+  data %>% 
+    lm(series_complete_pop_pct ~ stringency * penn_state_index +
+          republican_percent * penn_state_index, .),
+  digits = 4,
+  robust = TRUE
+)
+```
+
+```{r}
+jtools::export_summs(
+  data %>%
+    lm(
+      series_complete_pop_pct ~ stringency * penn_state_index +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent * penn_state_index + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  data %>%
+    lm(
+      series_complete_pop_pct ~ stringency * penn_state_index +
+        republican_percent * penn_state_index
+      +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural,
+      .
+    ),
+  digits = 4,
+  robust = TRUE
+  
+)
+```
+
+```{r table-2}
+# data %>% 
+```
+
+
+```{r}
+data %>% 
+  ggplot() + 
+  aes(x = series_complete_pop_pct) + 
+  geom_histogram()
+```
+
+```{r}
+data %>% 
+  filter(series_complete_pop_pct > 0,
+         state == "TX") #%>% 
+  # filter(state == "CA") %>% 
+  # pull(county) -> county
+  # distinct(state)
+```
+
