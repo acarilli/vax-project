@@ -1,0 +1,309 @@
+---
+title: "4 Quadrant Graph"
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: false
+    toc_float: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+library(ggrepel)
+```
+
+# Data
+
+```{r message=FALSE, warning=FALSE}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  ggplot() +
+  aes(
+    y = republican_percent,
+    x = county_level_index ,
+    color = series_complete_pop_pct,
+    label = paste(county, state, sep = ", ")
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "blue",
+    size = 1.25,
+    alpha = .5
+  ) +
+  geom_hline(
+    yintercept = 68.3,
+    color = "red",
+    size = 1.25,
+    alpha = .5
+  ) +
+  # geom_jitter(color = "grey", alpha = .2) +
+  geom_jitter() + 
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 2.5,
+             republican_percent > 87),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -3,
+             republican_percent < 25),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -1,
+             republican_percent > 86),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 1.5,
+             republican_percent < 35),
+    size = 3
+    
+  ) +
+  scale_color_gradientn(colors = terrain.colors(10)) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 2.5,
+             republican_percent > 87),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -3,
+             republican_percent < 25),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -1,
+             republican_percent > 86),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 1.5,
+             republican_percent < 35),
+    color = "black"
+  ) +
+  theme(legend.position = "bottom") +
+  scale_x_reverse()
+  # geom_smooth()
+
+```
+
+```{r message=FALSE, warning=FALSE}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>% 
+  summarize(median(stringency, na.rm = TRUE))
+
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  ggplot() +
+  aes(
+    y = stringency,
+    x = county_level_index ,
+    color = series_complete_pop_pct,
+    label = paste(county, state, sep = ", ")
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "blue",
+    size = 1.25,
+    alpha = .5
+  ) +
+  geom_hline(
+    yintercept = 599,
+    color = "red",
+    size = 1.25,
+    alpha = .5
+  ) +
+  # geom_jitter(color = "grey", alpha = .2) +
+  geom_jitter() + 
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 2.5,
+             republican_percent > 87),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -3,
+             republican_percent < 25),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -1,
+             republican_percent > 86),
+    size = 3
+    
+  ) +
+  geom_jitter(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 1.5,
+             republican_percent < 35),
+    size = 3
+    
+  ) +
+  scale_color_gradientn(colors = terrain.colors(10)) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 2.5,
+             republican_percent > 87),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -3,
+             republican_percent < 25),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index <= -1,
+             republican_percent > 86),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = here::here("data", "vax-data.csv") %>%
+      read_csv() %>%
+      filter(county_level_index >= 1.5,
+             republican_percent < 35),
+    color = "black"
+  ) +
+  theme(legend.position = "bottom") +
+  scale_x_reverse() +
+  geom_smooth()
+
+```
+
+```{r message=FALSE}
+here::here("data", "vax-data.csv") %>% 
+  read_csv() %>% 
+  summarize(sum(republican_percent > 50, na.rm = TRUE),
+            median(republican_percent, na.rm = TRUE),
+            median(county_level_index, na.rm = TRUE))
+ 
+```
+
+```{r}
+read_csv("https://raw.githubusercontent.com/cphalpert/census-regions/master/us%20census%20bureau%20regions%20and%20divisions.csv") %>% janitor::clean_names() %>% 
+  write_csv("data/state-regions.csv")
+```
+
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  right_join(here::here("data", "state-regions.csv") %>%
+               read_csv(),
+             by = c("state" = "state_code")) %>%
+  ggplot() +
+  aes(
+    y = republican_percent,
+    x = county_level_index ,
+    color = region
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "blue",
+    size = 1.25,
+    alpha = .5
+  ) +
+  # geom_hline(
+  #   yintercept = 68.3,
+  #   color = "red",
+  #   size = 1.25,
+  #   alpha = .5
+  # ) +
+  geom_point(alpha = .5) +
+  facet_wrap(~division)
+```
+
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  right_join(here::here("data", "state-regions.csv") %>%
+               read_csv(),
+             by = c("state" = "state_code")) %>%
+  ggplot() + 
+  aes(x = region, y = county_level_index, color = division, label = division) +
+  geom_boxplot() + 
+  geom_label_repel() + 
+  theme(legend.position = "none")
+```
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  right_join(here::here("data", "state-regions.csv") %>%
+               read_csv(),
+             by = c("state" = "state_code")) %>%
+  ggplot() + 
+  aes(x = region, y = republican_percent, fill = division) +
+  geom_boxplot()
+```
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  right_join(here::here("data", "state-regions.csv") %>%
+               read_csv(),
+             by = c("state" = "state_code")) %>%
+  ggplot() + 
+  aes(x = region, y = stringency, fill = division) +
+  geom_boxplot()
+```
+
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>% 
+  right_join(here::here("data", "state-regions.csv") %>%
+               read_csv(),
+             by = c("state" = "state_code")) %>%
+plotly::plot_ly(
+  y = ~ republican_percent,
+  x = ~ county_level_index,
+  type = "scatter",
+  text = ~ county, 
+  color = ~ series_complete_pop_pct
+)
+ 
+```
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>% 
+  l
+```
+
