@@ -35,11 +35,11 @@ left_join(
   # mutate(series_complete_pop_pct.x = series_complete_pop_pct.y) %>% 
   rename(series_complete_pop_pct = series_complete_pop_pct.y) %>% 
   select(-series_complete_pop_pct.x) %>% 
-  write_csv("data/vax-data.csv")
-  # filter(series_complete_pop_pct != 0) %>%
-  # ggplot() +
-  # aes(x = series_complete_pop_pct) +
-  # geom_histogram(binwidth = 1) %>%
-  # identity()
+  write_csv("data/vax-data.csv") %>% 
+  filter(series_complete_pop_pct != 0) %>%
+  ggplot() +
+  aes(x = series_complete_pop_pct) +
+  geom_histogram(binwidth = 1) %>%
+  identity()
 ```
 
