@@ -19,7 +19,9 @@ library(tidyverse)
 ```{r data}
 data <-
   here::here("data", "vax-data.csv") %>%
-  read_csv()
+  read_csv() %>% 
+  filter(series_complete_pop_pct != 0) %>%
+  identity()
 ```
 
 ```{r table-3}
@@ -28,9 +30,11 @@ data <-
 
 jtools::export_summs(
 # stargazer::stargazer(
-  data %>%
-    lm(series_complete_pop_pct ~ stringency + county_level_index +
-         I(stringency * county_level_index), .),
+  # data %>%
+  #   lm(series_complete_pop_pct ~ stringency + county_level_index +
+  #        I(stringency * county_level_index), .),
+  data %>% 
+    lm(series_complete_pop_pct ~ stringency * county_level_index, .),
   data %>%
     lm(
       series_complete_pop_pct ~ republican_percent + county_level_index + 
@@ -45,15 +49,15 @@ jtools::export_summs(
          I(republican_percent * county_level_index) + I(stringency * county_level_index), .),
   # type = "text"
   digits = 4,
-  robust = TRUE,
-  coefs = c(
-    "C" = "(Intercept)",
-    "Public Health" = "stringency",
-    "Social K" = "county_level_index",
-    "Stringency interacted with Social K" = "I(stringency * county_level_index)",
-    "Personal Freedom" = "republican_percent",
-    "Personal Freedom with Social K" = "I(republican_percent * county_level_index)"
-  )
+  robust = TRUE
+  # coefs = c(
+  #   "C" = "(Intercept)",
+  #   "Public Health" = "stringency",
+  #   "Social K" = "county_level_index",
+  #   "Stringency interacted with Social K" = "I(stringency * county_level_index)",
+  #   "Personal Freedom" = "republican_percent",
+  #   "Personal Freedom with Social K" = "I(republican_percent * county_level_index)"
+  # )
 )
 ```
 
@@ -153,15 +157,57 @@ jtools::export_summs(
 data %>% 
   ggplot() + 
   aes(x = series_complete_pop_pct) + 
-  geom_histogram()
+  geom_histogram(binwidth = 1)
+```
+
+Counties excluded from data...
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>% 
+  filter(series_complete_pop_pct == 0) %>% 
+  select(county,state, population) %>% 
+  group_by(state) %>% 
+  summarize(sum(population))
 ```
 
 ```{r}
 data %>% 
-  filter(series_complete_pop_pct > 0,
-         state == "TX") #%>% 
-  # filter(state == "CA") %>% 
-  # pull(county) -> county
-  # distinct(state)
+  ggplot() + 
+  aes(x = county_level_index) + 
+  geom_histogram(binwidth = .5)
+```
+
+
+```{r}
+data %>% 
+  ggplot() + 
+  aes(x = republican_percent, y = series_complete_pop_pct) + 
+  geom_jitter() + 
+  geom_smooth()
+```
+
+```{r}
+data %>% 
+  ggplot() + 
+  aes(x = county_level_index, y = series_complete_pop_pct) + 
+  geom_jitter() + 
+  geom_smooth()
+```
+
+```{r}
+data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index + 
+       republican_percent * county_level_index + 
+       I(republican_percent^2) + I(stringency^2), .) %>% 
+  jtools::summ(robust = TRUE)
+```
+
+```{r}
+data %>% 
+  lm(series_complete_pop_pct ~ I(stringency^2) * county_level_index + 
+       republican_percent * county_level_index + 
+       I(republican_percent^2) + I(stringency^2), .) %>% 
+  jtools::summ(robust = TRUE, digits = 4)
 ```
 

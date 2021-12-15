@@ -105,7 +105,7 @@ here::here("data", "vax-data.csv") %>%
     color = "black"
   ) +
   theme(legend.position = "bottom") +
-  scale_x_reverse()
+  scale_x_reverse() 
   # geom_smooth()
 
 ```
@@ -299,11 +299,5 @@ plotly::plot_ly(
   color = ~ series_complete_pop_pct
 )
  
-```
-
-```{r}
-here::here("data", "vax-data.csv") %>%
-  read_csv() %>% 
-  l
 ```
 
