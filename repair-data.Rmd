@@ -19,13 +19,8 @@ library(tidyverse)
 # Fix vax data
 
 ```{r}
-here::here("data", "vax-data.csv") %>% 
-  read_csv()
-```
-
-```{r}
 left_join(
-  here::here("data", "vax-data.csv") %>%
+  here::here("data", "vax-data-old.csv") %>%
     read_csv(),
   here::here(
     "data",
@@ -36,6 +31,15 @@ left_join(
     filter(date == "11/30/2021") %>%
     select(fips, series_complete_pop_pct),
   by = "fips"
-)
+) %>% 
+  # mutate(series_complete_pop_pct.x = series_complete_pop_pct.y) %>% 
+  rename(series_complete_pop_pct = series_complete_pop_pct.y) %>% 
+  select(-series_complete_pop_pct.x) %>% 
+  write_csv("data/vax-data.csv")
+  # filter(series_complete_pop_pct != 0) %>%
+  # ggplot() +
+  # aes(x = series_complete_pop_pct) +
+  # geom_histogram(binwidth = 1) %>%
+  # identity()
 ```
 
