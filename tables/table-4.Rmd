@@ -1,0 +1,94 @@
+---
+output: pdf_document
+---
+
+```{r setup-tab3, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+```{r data-tab-3}
+df <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv(show_col_types = FALSE) %>% 
+  filter(series_complete_pop_pct != 0) %>% 
+  select(
+    series_complete_pop_pct,
+    contains("days"),
+    -days,
+    stringency,
+    county_level_index,
+    republican_percent,
+    percent_adults_with_ba,
+    percent_in_fair_or_poor_health,
+    percent_black,
+    percent_rural,
+    percent_65,
+    median_household_income
+  ) %>%
+  as.data.frame()
+```
+
+```{r tab-3, results='asis'}
+stargazer::stargazer(
+  df %>%
+    lm(
+      series_complete_pop_pct ~ stringency + county_level_index +
+        I(stringency * county_level_index) + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65,
+      data = .
+    ) %>%
+    lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC0")),
+  df %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent + county_level_index +
+        I(republican_percent * county_level_index) +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65,
+      data = .
+    ) %>%
+    lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC0")),
+  df %>%
+    lm(
+      series_complete_pop_pct ~ republican_percent + county_level_index +
+        I(republican_percent * county_level_index) +
+        stringency * county_level_index +
+        I(stringency * county_level_index) + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65,
+      data = .
+    ) %>%
+    lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC0")),
+  type = "latex",
+  df = FALSE,
+  intercept.bottom = FALSE,
+  intercept.top = TRUE,
+  covariate.labels = c(
+    "Constant",
+    "Stringency",
+    "Social K",
+    "Personal Freedom",
+    "Social K * Stringency",
+    "Social K * Personal Freedom",
+    "Median Household Income",
+    "\\% Bachelor's",
+    "\\% Fair/Poor Health",
+    "\\% Black",
+    "\\% Rural",
+    "\\% > 65"
+  ),
+  title = "Regression Results",
+  dep.var.labels = "Percentage of County Vaccinated",
+  header = FALSE
+)
+
+```
+
+
+
+
