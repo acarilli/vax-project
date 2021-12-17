@@ -42,7 +42,7 @@ here::here("data", "vax-data.csv") %>%
     alpha = .5
   ) +
   # geom_jitter(color = "grey", alpha = .2) +
-  geom_jitter() + 
+  geom_jitter(alpha = .5) + 
   geom_jitter(
     data = here::here("data", "vax-data.csv") %>%
       read_csv() %>%
@@ -101,11 +101,13 @@ here::here("data", "vax-data.csv") %>%
     data = here::here("data", "vax-data.csv") %>%
       read_csv() %>%
       filter(county_level_index >= 1.5,
-             republican_percent < 35),
+             republican_percent < 35), 
+    size = 3,
     color = "black"
   ) +
   theme(legend.position = "bottom") +
-  scale_x_reverse() 
+  scale_y_reverse() + 
+  scale_x_reverse()
   # geom_smooth()
 
 ```
@@ -200,8 +202,7 @@ here::here("data", "vax-data.csv") %>%
     color = "black"
   ) +
   theme(legend.position = "bottom") +
-  scale_x_reverse() +
-  geom_smooth()
+  scale_x_reverse() 
 
 ```
 
@@ -299,5 +300,48 @@ plotly::plot_ly(
   color = ~ series_complete_pop_pct
 )
  
+```
+
+
+```{r}
+here::here("data", "vax-data.csv") %>%
+  read_csv() %>% 
+  slice_sample(prop = .15) %>% 
+  ggplot() +
+  aes(
+    y = republican_percent,
+    x = county_level_index ,
+    # color = series_complete_pop_pct,
+    size = series_complete_pop_pct,
+    label = paste(county, state, sep = ", ")
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "blue",
+    size = 1.25,
+    alpha = .5
+  ) +
+  geom_hline(
+    yintercept = 68.3,
+    color = "red",
+    size = 1.25,
+    alpha = .5
+  ) +
+  # geom_jitter(color = "grey", alpha = .2) +
+  geom_jitter(alpha = .25) +
+  # scale_color_gradientn(colors = terrain.colors(10)) +
+  scale_color_gradient(low = "white", high = "black") +
+  theme(legend.position = "bottom") +
+  scale_y_reverse() + 
+  scale_x_reverse() +
+  scale_radius()
+```
+
+```{r}
+# quadrant 1
+df %>% 
+  filter(republican_percent < median(df$republican_percent, na.rm = TRUE),
+         county_level_index > 0) %>% 
+  summarize(mean(series_complete_pop_pct, na.rm = TRUE))
 ```
 

@@ -180,9 +180,9 @@ data %>%
 
 
 ```{r}
-data %>% 
+df %>% 
   ggplot() + 
-  aes(x = republican_percent, y = series_complete_pop_pct) + 
+  aes(x = stringency, y = series_complete_pop_pct) + 
   geom_jitter() + 
   geom_smooth()
 ```
@@ -196,11 +196,11 @@ data %>%
 ```
 
 ```{r}
-data %>% 
+df %>% 
   lm(series_complete_pop_pct ~ stringency * county_level_index + 
        republican_percent * county_level_index + 
        I(republican_percent^2) + I(stringency^2), .) %>% 
-  jtools::summ(robust = TRUE)
+  jtools::summ(robust = TRUE, digits = 6)
 ```
 
 ```{r}
