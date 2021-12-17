@@ -21,7 +21,9 @@ df %>%
   select(
     series_complete_pop_pct,
     contains("days"),
+    -days,
     stringency,
+    county_level_index,
     percent_adults_with_ba,
     percent_in_fair_or_poor_health,
     percent_black,
@@ -30,12 +32,32 @@ df %>%
     median_household_income
   ) %>%
   as.data.frame() %>%
-  stargazer::stargazer(type = "latex",
-                       summary.stat = c("n",
-                                        "min",
-                                        "max",
-                                        "mean",
-                                        "median",
-                                        "sd"))
+  stargazer::stargazer(
+    type = "latex",
+    summary.stat = c("n",
+                     "min",
+                     "max",
+                     "mean",
+                     "median",
+                     "sd"),
+    digits = 2,
+    covariate.labels = c(
+      "\\% Vaccinated",
+      "Bar Days",
+      "Gathering Days",
+      "Mask Days",
+      "Restaurant Days",
+      "Stay at Home Days",
+      "Stringency",
+      "County Level Index",
+      "\\% Bachelor's",
+      "\\% Fair/Poor Health",
+      "\\% Black",
+      "\\% Rural",
+      "\\% > 65",
+      "Median Household Income"
+      
+    )
+  )
 ```
 
