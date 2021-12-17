@@ -34,7 +34,8 @@ df <-
 stargazer::stargazer(
   df %>% 
     lm(
-      series_complete_pop_pct ~ stringency * county_level_index,
+      series_complete_pop_pct ~ stringency + county_level_index +
+        I(stringency * county_level_index),
       data = .
     ) %>% 
     lmtest::coeftest(
@@ -42,7 +43,8 @@ stargazer::stargazer(
     ),
   df %>% 
     lm(
-      series_complete_pop_pct ~ republican_percent * county_level_index,
+      series_complete_pop_pct ~ republican_percent + county_level_index +
+        I(republican_percent * county_level_index),
       data = .
     ) %>% 
     lmtest::coeftest(
@@ -50,15 +52,32 @@ stargazer::stargazer(
     ),
   df %>% 
     lm(
-      series_complete_pop_pct ~ republican_percent * county_level_index + 
-        stringency * county_level_index,
+      series_complete_pop_pct ~ republican_percent + county_level_index + 
+        I(republican_percent * county_level_index) + 
+        stringency * county_level_index + 
+        I(stringency * county_level_index),
       data = .
     ) %>% 
     lmtest::coeftest(
       sandwich::vcovHC(., method = "white1", type = "HC0")
     ),
   type = "latex",
-  df = FALSE
+  df = FALSE,
+  intercept.bottom = FALSE,
+  intercept.top = TRUE,
+  covariate.labels = c(
+    "Constant",
+    "Stringency",
+    "Social K",
+    "Personal Freedom",
+    "Social K * Stringency",
+    "Social K * Personal Freedom"
+  ),
+  title = "Regression Results",
+  dep.var.labels = "Percentage of County Vaccinated"
+    
+    
+  
 )
 
 ```
