@@ -19,6 +19,7 @@ df <-
     -days,
     stringency,
     county_level_index,
+    republican_percent,
     percent_adults_with_ba,
     percent_in_fair_or_poor_health,
     percent_black,
@@ -49,6 +50,7 @@ df %>%
       "Stay at Home Days",
       "Stringency",
       "County Level Index",
+      "\\% Republican",
       "\\% Bachelor's",
       "\\% Fair/Poor Health",
       "\\% Black",
@@ -58,4 +60,6 @@ df %>%
     )
   )
 ```
+
+
 
