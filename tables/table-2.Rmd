@@ -1,5 +1,4 @@
 ---
-title: ""
 output: pdf_document
 ---
 
@@ -56,7 +55,6 @@ df %>%
       "\\% Rural",
       "\\% > 65",
       "Median Household Income"
-      
     )
   )
 ```
