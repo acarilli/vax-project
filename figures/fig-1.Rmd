@@ -2,13 +2,95 @@
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup-fig-1, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment = NA,
                       options(digits = 3, scipen = 999))
 library(tidyverse)
 ```
 
-```{r}
+```{r fig-1}
+figure_1 <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv() %>%
+  slice_sample(prop = .2) %>%
+  ggplot() +
+  aes(
+    y = republican_percent,
+    x = county_level_index ,
+    # color = series_complete_pop_pct,
+    size = series_complete_pop_pct,
+    label = paste(county, state, sep = ", ")
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "grey",
+    size = 1.25,
+    alpha = .5
+  ) +
+  geom_hline(
+    yintercept = 68.3,
+    color = "grey",
+    size = 1.25,
+    alpha = .5
+  ) +
+  geom_jitter(alpha = .25, na.rm = TRUE) +
+  scale_color_gradient(low = "white", high = "black") +
+  theme(legend.position = "bottom") +
+  scale_y_reverse() +
+  scale_x_reverse() +
+  scale_radius() +
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    axis.text = element_blank(),
+    legend.position = c(.85, .7),
+    legend.direction = "vertical",
+    legend.justification = c(0, 1),
+    legend.title = element_blank(),
+    legend.key = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  labs(x = NULL, y = NULL) +
+  annotate(
+    "text",
+    x = 2.9,
+    y = 100,
+    label = "Quadrant III",
+    size = 3.5
+  ) +
+  annotate(
+    "text",
+    x = 2.9,
+    y =  0,
+    label = "Quadrant I",
+    size = 3.5
+  ) +
+  annotate(
+    "text",
+    x = -3,
+    y = 0,
+    label = "Quadrant II",
+    size = 3.5
+  ) +
+  annotate(
+    "text",
+    x = -3,
+    y = 100,
+    label = "Quadrant IV",
+    size = 3.5
+  ) +
+  xlim(3, -4)
 
+figure_1
+        
 ```
 
+```{r}
+figure_1
+```
+
+```{r}
+ggsave("figure-1.png")
+```
+
+![](figure-1.png)
