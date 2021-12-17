@@ -12,11 +12,7 @@ library(tidyverse)
 df <-
   here::here("data", "vax-data.csv") %>%
   read_csv(show_col_types = FALSE) %>% 
-  filter(series_complete_pop_pct != 0) 
-```
-
-```{r tab-2, results = 'asis'}
-df %>%
+  filter(series_complete_pop_pct != 0) %>% 
   select(
     series_complete_pop_pct,
     contains("days"),
@@ -30,7 +26,11 @@ df %>%
     percent_65,
     median_household_income
   ) %>%
-  as.data.frame() %>%
+  as.data.frame()
+```
+
+```{r tab-2, results = 'asis'}
+df %>%
   stargazer::stargazer(
     type = "latex",
     summary.stat = c("n",
