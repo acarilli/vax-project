@@ -95,6 +95,27 @@ jtools::export_summs(
 )
 ```
 
+```{r}
+data %>%
+    ivreg::ivreg(
+      series_complete_pop_pct ~ stringency * county_level_index +
+        republican_percent * county_level_index + 
+        I(stringency^2) * county_level_index + 
+        I(republican_percent^2) * county_level_index 
+        |
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65 + stringency + I(stringency^2) + 
+        republican_percent + I(republican_percent^2),
+      data = .
+    ) %>% 
+  summary()
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC3")
+  )
+  
+```
+
 
 ```{r table-5-penn-index}
  
