@@ -148,10 +148,6 @@ jtools::export_summs(
 )
 ```
 
-```{r table-2}
-# data %>% 
-```
-
 
 ```{r}
 data %>% 
@@ -180,7 +176,7 @@ data %>%
 
 
 ```{r}
-df %>% 
+data %>% 
   ggplot() + 
   aes(x = stringency, y = series_complete_pop_pct) + 
   geom_jitter() + 
@@ -196,18 +192,39 @@ data %>%
 ```
 
 ```{r}
-df %>% 
+data %>% 
   lm(series_complete_pop_pct ~ stringency * county_level_index + 
        republican_percent * county_level_index + 
        I(republican_percent^2) + I(stringency^2), .) %>% 
+  jtools::summ(robust = TRUE, digits = 6)
+
+data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index + 
+       republican_percent * county_level_index + 
+       I(republican_percent^2) + I(stringency^2) +
+       median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65, .) %>% 
   jtools::summ(robust = TRUE, digits = 6)
 ```
 
 ```{r}
 data %>% 
-  lm(series_complete_pop_pct ~ I(stringency^2) * county_level_index + 
+  lm(series_complete_pop_pct ~ stringency * county_level_index +
+       I(stringency^2) * county_level_index + 
        republican_percent * county_level_index + 
-       I(republican_percent^2) + I(stringency^2), .) %>% 
+       I(republican_percent^2) * county_level_index, .) %>% 
   jtools::summ(robust = TRUE, digits = 4)
+
+data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index +
+       I(stringency^2) * county_level_index + 
+       republican_percent * county_level_index + 
+       I(republican_percent^2) * county_level_index +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65, .) %>% 
+  jtools::summ(robust = TRUE, digits = 4)
+
 ```
 
