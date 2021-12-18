@@ -68,7 +68,7 @@ jtools::export_summs(
       series_complete_pop_pct ~ stringency * county_level_index +
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   data %>%
@@ -76,7 +76,7 @@ jtools::export_summs(
       series_complete_pop_pct ~ republican_percent * county_level_index + 
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   data %>%
@@ -86,7 +86,7 @@ jtools::export_summs(
       +
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   digits = 4,
@@ -121,7 +121,7 @@ jtools::export_summs(
       series_complete_pop_pct ~ stringency * penn_state_index +
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   data %>%
@@ -129,7 +129,7 @@ jtools::export_summs(
       series_complete_pop_pct ~ republican_percent * penn_state_index + 
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   data %>%
@@ -139,7 +139,7 @@ jtools::export_summs(
       +
         median_household_income + percent_adults_with_ba +
         percent_in_fair_or_poor_health + percent_black +
-        percent_rural,
+        percent_rural + percent_65,
       .
     ),
   digits = 4,
