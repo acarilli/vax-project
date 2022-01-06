@@ -249,3 +249,24 @@ data %>%
 
 ```
 
+```{r}
+data %>% 
+  lm(
+      series_complete_pop_pct ~ stringency * county_level_index +
+        republican_percent * county_level_index
+      + stringency +
+        median_household_income + 
+        percent_black +
+        percent_rural + percent_65 + relative_immobility + percent_asian + percent_obese,
+      .
+    ) %>% 
+  jtools::summ(digits = 4, robust = TRUE)
+  
+```
+
+```{r}
+data %>% 
+  select(county, state, stringency, county_level_index, republican_percent) %>% 
+  filter(is.na(county_level_index))
+```
+
