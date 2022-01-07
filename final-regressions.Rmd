@@ -19,7 +19,7 @@ library(tidyverse)
 ```{r data}
 data <-
   here::here("data", "vax-data.csv") %>%
-  read_csv() %>% 
+  read_csv(show_col_types = FALSE) %>% 
   filter(series_complete_pop_pct != 0) %>%
   identity()
 ```
@@ -34,7 +34,8 @@ jtools::export_summs(
   #   lm(series_complete_pop_pct ~ stringency + county_level_index +
   #        I(stringency * county_level_index), .),
   data %>% 
-    lm(series_complete_pop_pct ~ stringency * county_level_index, .),
+    lm(series_complete_pop_pct ~ stringency * county_level_index 
+         , .),
   data %>%
     lm(
       series_complete_pop_pct ~ republican_percent + county_level_index + 
@@ -91,9 +92,38 @@ jtools::export_summs(
     ),
   digits = 4,
   robust = TRUE
-  
 )
 ```
+
+```{r table4-iv}
+
+data %>% 
+  ivreg::ivreg(
+    series_complete_pop_pct ~ stringency * county_level_index + 
+      republican_percent * county_level_index | 
+      county_level_index + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + 
+        percent_rural + percent_black + percent_65,
+    data = .
+  ) %>% 
+  # summary() %>%
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC3")
+  ) 
+
+
+data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index + 
+      republican_percent * county_level_index + 
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + 
+        percent_rural + percent_black + percent_65,
+    data = .) %>% 
+  summary()
+```
+
+
 
 ```{r}
 data %>%
@@ -268,5 +298,28 @@ data %>%
 data %>% 
   select(county, state, stringency, county_level_index, republican_percent) %>% 
   filter(is.na(county_level_index))
+```
+
+```{r}
+data %>% 
+  lm(county_level_index ~ median_household_income + 
+        percent_black + percent_rural + percent_65 + 
+        relative_immobility + percent_asian + percent_obese,
+     .) %>% 
+  summary()
+```
+
+```{r}
+data %>%
+    lm(
+      series_complete_pop_pct ~ stringency * county_level_index +
+        republican_percent * county_level_index
+      +
+        median_household_income + percent_adults_with_ba +
+        percent_in_fair_or_poor_health + percent_black +
+        percent_rural + percent_65,
+      .
+    ) %>% 
+  jtools::summ(vifs = TRUE)
 ```
 
