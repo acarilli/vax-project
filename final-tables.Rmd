@@ -1,0 +1,72 @@
+---
+title: ""
+author: "Tony Carilli"
+date: '`r format(lubridate::today(), "%B %d, %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+```{r data, include=FALSE}
+data <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv(show_col_types = FALSE) %>% 
+  filter(series_complete_pop_pct != 0) 
+```
+
+```{r model-1, include=FALSE}
+model_1 <- 
+  data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index, .) %>% 
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC1")
+  )
+```
+
+```{r model-2, include=FALSE}
+model_2 <- 
+  data %>% 
+  lm(series_complete_pop_pct ~ republican_percent * county_level_index, .) %>% 
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC1")
+  )
+```
+
+```{r model-3, include=FALSE}
+model_3 <- 
+  data %>% 
+  lm(series_complete_pop_pct ~ stringency * county_level_index + 
+       republican_percent * county_level_index, .) %>% 
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC1")
+  )
+```
+
+```{r model-4, include=FALSE}
+model_4 <-
+  data %>%
+  ivreg::ivreg(
+    series_complete_pop_pct ~ stringency * county_level_index +
+      republican_percent * county_level_index |
+      county_level_index + median_household_income +
+      percent_adults_with_ba + percent_in_fair_or_poor_health +
+      percent_rural + percent_black + percent_65,
+    data = .
+  )  %>% 
+  # summary()
+  lmtest::coeftest(
+    sandwich::vcovHC(., method = "white1", type = "HC1")
+  )
+```
+
+```{r table-3, echo=FALSE, results='asis'}
+stargazer::stargazer(
+  model_1, model_2, model_3, model_4,
+  type = "html"
+  )
+```
+
