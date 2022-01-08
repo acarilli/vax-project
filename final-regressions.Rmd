@@ -109,7 +109,7 @@ data %>%
   ) %>% 
   # summary() %>%
   lmtest::coeftest(
-    sandwich::vcovHC(., method = "white1", type = "HC3")
+    sandwich::vcovHC(., method = "white1", type = "HC0")
   ) 
 
 

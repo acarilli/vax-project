@@ -57,10 +57,10 @@ model_4 <-
       percent_rural + percent_black + percent_65,
     data = .
   )  %>% 
-  # summary()
-  lmtest::coeftest(
-    sandwich::vcovHC(., method = "white1", type = "HC1")
-  )
+  summary()
+  # lmtest::coeftest(
+  #   sandwich::vcovHC(., method = "white1", type = "HC1")
+  # )
 ```
 
 ```{r table-3, echo=FALSE, results='asis'}
@@ -68,5 +68,17 @@ stargazer::stargazer(
   model_1, model_2, model_3, model_4,
   type = "html"
   )
+```
+
+```{r}
+att <- 
+map(model_4, attributes)
+
+att$coefficients$df
+
+```
+
+```{r}
+attr(model_4$coefficients, "df")
 ```
 
