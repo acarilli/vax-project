@@ -123,9 +123,9 @@ rse <- c(
 df_rse <- c(
   "df",
   model_1$df.residual,
-  model_1$df.residual,
-  model_1$df.residual,
-  model_1$df.residual
+  model_2$df.residual,
+  model_3$df.residual,
+  model_4$df.residual
 )
 f <- c(
   "F Statistic",
