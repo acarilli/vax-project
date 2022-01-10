@@ -2,20 +2,20 @@
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup-tab4, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment = NA,
                       options(digits = 3, scipen = 999))
 library(tidyverse)
 ```
 
-```{r data, include=FALSE}
+```{r data-tab4, include=FALSE}
 data <-
   here::here("data", "vax-data.csv") %>%
   read_csv(show_col_types = FALSE) %>% 
   filter(series_complete_pop_pct != 0) 
 ```
 
-```{r model-1, include=FALSE}
+```{r model-1-tab4, include=FALSE}
 model_1 <-
   data %>%
   lm(
@@ -34,7 +34,7 @@ model_1_robust <-
   lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC1"))
 ```
 
-```{r model-2, include=FALSE}
+```{r model-2-tab4, include=FALSE}
 model_2 <-
   data %>%
   lm(
@@ -53,7 +53,7 @@ model_2_robust <-
   lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC1"))
 ```
 
-```{r model-3, include=FALSE}
+```{r model-3-tab4, include=FALSE}
 model_3 <-
   data %>%
   lm(
@@ -77,7 +77,7 @@ model_3_robust <-
 ```
 
 
-```{r add-lines-vectors, results='asis', echo=FALSE}
+```{r add-lines-vectors-tab4, results='asis', echo=FALSE}
 # lines to add to table
 obs <- c("Observations", nobs(model_1), nobs(model_2), nobs(model_3))
 r2 <- round(c(summary(model_1)$r.squared, summary(model_2)$r.squared, summary(model_3)$r.squared),3)
