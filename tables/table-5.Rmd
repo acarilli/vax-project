@@ -16,15 +16,7 @@ data <-
 ```
 
 ```{r model-1-tab5, include=FALSE}
-# model_1 <-
-#   data %>%
-#   lm(
-#     series_complete_pop_pct ~ stringency + county_level_index +
-#       I(stringency * county_level_index),
-#     .
-#   ) 
-
-model_1_robust <-
+model_1 <-
   data %>%
   lm(
     series_complete_pop_pct ~ stringency + 
@@ -37,20 +29,15 @@ model_1_robust <-
       I(stringency * institutional_health) +
       I(stringency * collective_efficacy),
     .
-  ) %>%
+  )
+
+model_1_robust <-
+  model_1 %>%
   lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC1"))
 ```
 
 ```{r model-2-tab5, include=FALSE}
-# model_2 <-
-#   data %>%
-#   lm(
-#     series_complete_pop_pct ~ republican_percent +  county_level_index +
-#       I(republican_percent * county_level_index),
-#     .
-#   ) 
-
-model_2_robust <-
+model_2 <-
   data %>%
   lm(
     series_complete_pop_pct ~ republican_percent + 
@@ -63,22 +50,16 @@ model_2_robust <-
       I(republican_percent * institutional_health) +
       I(republican_percent * collective_efficacy),
     .
-  ) %>%
+  ) 
+
+
+model_2_robust <-
+  model_2 %>% 
   lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC1"))
 ```
 
 ```{r model-3-tab5, include=FALSE}
-# model_3 <-
-#   data %>%
-#   lm(
-#     series_complete_pop_pct ~ stringency + county_level_index +
-#       I(stringency * county_level_index) +
-#       republican_percent + county_level_index +
-#       I(republican_percent * county_level_index),
-#     .
-#   ) 
-
-model_3_robust <-
+model_3 <-
   data %>%
   lm(
     series_complete_pop_pct ~ stringency + republican_percent +
@@ -95,12 +76,15 @@ model_3_robust <-
       I(republican_percent * institutional_health) +
       I(republican_percent * collective_efficacy),
     .
-  ) %>%
+  ) 
+
+model_3_robust <-
+  model_3 %>% 
   lmtest::coeftest(sandwich::vcovHC(., method = "white1", type = "HC1"))
 ```
 
 
-```{r add-lines-vectors-tab5, results='asis', echo=FALSE, eval=FALSE}
+```{r add-lines-vectors-tab5, results='asis', echo=FALSE}
 # lines to add to table
 obs <- c("Observations", nobs(model_1), nobs(model_2), nobs(model_3))
 r2 <- round(c(summary(model_1)$r.squared, summary(model_2)$r.squared, summary(model_3)$r.squared),3)
@@ -137,32 +121,37 @@ df_f <- c(
 
 ```{r table5, results='asis', echo=FALSE}
 stargazer::stargazer(
-  model_1_robust, model_2_robust, model_3_robust,
+  model_1_robust,
+  model_2_robust,
+  model_3_robust,
   # type = "html",
-  # add.lines = list(
-  #   obs,
-  #   r2,
-  #   ar2, 
-  #   rse,
-  #   # df_rse,
-  #   f
-  #   # df_f
-  #   
-  # ),
+  add.lines = list(obs,
+                   r2,
+                   f),
   intercept.bottom = FALSE,
-  # covariate.labels = c(
-  #   "Constant",
-  #   "Public Health",
-  #   "Personal Freedom",
-  #   "Social K",
-  #   "Social K * Public Health",
-  #   "Social K * Personal Freedom"
-  # ),
+  covariate.labels = c(
+    "Constant",
+    "Public Health",
+    "Personal Freedom",
+    "Family Unit",
+    "Community Health",
+    "Institutional Health",
+    "Collective Efficacy",
+    "Family Unit * Public Health",
+    "Community Health * Public Health",
+    "Institutional Health * Public Health",
+    "Collective Efficacy * Public Health",
+    "Family Unit * Personal Freedom",
+    "Community Health * Personal Freedom",
+    "Institutional Health * Personal Freedom",
+    "Collective Efficacy * Personal Freedom"
+  ),
   title = "Regression Results",
   dep.var.labels = "Percentage of County Vaccinated",
   notes.label = "Standard errors are heteroskedasticity robust.",
   header = FALSE
 )
+
   
 ```
 
