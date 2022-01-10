@@ -6,7 +6,21 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r child='figures/fig-1.Rmd'}
+
+```
+
+![](figures/figure-1.png)
+
+```{r child='tables/table-2.Rmd'}
+
+```
+
 ```{r child='tables/table-3.Rmd'}
+
+```
+
+```{r child='tables/table-5.Rmd'}
 
 ```
 

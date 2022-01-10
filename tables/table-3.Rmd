@@ -151,8 +151,8 @@ stargazer::stargazer(
   add.lines = list(
     obs,
     r2,
-    ar2, 
-    rse,
+    # ar2, 
+    # rse,
     # df_rse,
     f
     # df_f

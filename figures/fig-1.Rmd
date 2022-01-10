@@ -91,4 +91,3 @@ figure_1
 ggsave("figure-1.png")
 ```
 
-![](figure-1.png)
