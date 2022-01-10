@@ -144,7 +144,7 @@ df_f <- c(
 )
 ```
 
-```{r table3 results='asis', echo=FALSE}
+```{r table3, results='asis', echo=FALSE}
 stargazer::stargazer(
   model_1_robust, model_2_robust, model_3_robust, model_4_roboust,
   # type = "html",
