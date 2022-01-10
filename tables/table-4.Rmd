@@ -12,7 +12,8 @@ library(tidyverse)
 data <-
   here::here("data", "vax-data.csv") %>%
   read_csv(show_col_types = FALSE) %>% 
-  filter(series_complete_pop_pct != 0) 
+  filter(series_complete_pop_pct != 0) %>%
+  identity()
 ```
 
 ```{r model-1-tab4, include=FALSE}
@@ -142,4 +143,5 @@ stargazer::stargazer(
 )
   
 ```
+
 

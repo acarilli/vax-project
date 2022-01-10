@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA,
 library(tidyverse)
 ```
 
-```{r data-tab-2}
+```{r data-tab2}
 df <-
   here::here("data", "vax-data.csv") %>%
   read_csv(show_col_types = FALSE) %>% 
@@ -30,7 +30,7 @@ df <-
   as.data.frame()
 ```
 
-```{r tab-2, results = 'asis'}
+```{r tab2, results = 'asis'}
 df %>%
   stargazer::stargazer(
     type = "latex",
