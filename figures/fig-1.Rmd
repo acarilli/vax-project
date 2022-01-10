@@ -8,10 +8,10 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA,
 library(tidyverse)
 ```
 
-```{r fig-1}
+```{r fig-1, echo=FALSE, message=FALSE}
 figure_1 <-
   here::here("data", "vax-data.csv") %>%
-  read_csv() %>%
+  read_csv(show_col_types = FALSE) %>%
   slice_sample(prop = .2) %>%
   ggplot() +
   aes(
@@ -81,15 +81,13 @@ figure_1 <-
   ) +
   xlim(3, -4)
 
-figure_1
-        
 ```
 
-```{r}
+```{r print-figure-1, echo=FALSE}
 figure_1
 ```
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 ggsave("figure-1.png")
 ```
 
