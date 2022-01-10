@@ -85,7 +85,7 @@ To visualize how social capital influences vaccine rates across various levels o
 
 [[[Figure 1 here]]]
 
-To provide a more quantitative assessment of our hypotheses, we develop the following models. The first model specifies the basic functional form between the values people have for personal freedom and/or public health and their social capital---with no control variables---given by:
+To provide a more quantitative assessment of our hypotheses, we develop the following model, which specifies the basic functional form between the values people have for personal freedom and/or public health and their social capital:
 
 $$
 \begin{aligned}
@@ -93,11 +93,11 @@ Vaccination_{it}=\gamma_0+\gamma_1(Individual\ Values)_{i,t-7}+\gamma_2(Social\ 
 \end{aligned}
 $$
 
-where we measure vaccination as the magnitude of vaccination, i.e., the percentage of a county vaccinated on August 31, 2021. As of that date people had had about 7-8 months to become vaccinated for a negligible monetary cost.[^4] This vaccination data was collected from the Centers for Disease Control (CDC) COVID-19 Vaccination Surveillance Database.
+where we measure vaccination as the magnitude of vaccination, i.e., the percentage of a county vaccinated on November 30, 2021. As of that date people had had about 10-11 months to become vaccinated.[^4] This vaccination data was collected from the Centers for Disease Control (CDC) COVID-19 Vaccination Surveillance Database.
 
 [^4]: The FDA issued an EUA on Dec. 11, 2020 for the Pfizer vaccine.
 
-We include an interaction term between individual values and social capital to investigate our theoretical framework. That is, we can test the following four hypotheses:
+The interaction term between individual values and social capital allows us to investigate our theoretical framework. That is, we can test the following four hypotheses:
 
 1.  Do counties that have a higher desire for prevention have better vaccine outcomes?
 
@@ -107,17 +107,7 @@ We include an interaction term between individual values and social capital to i
 
 4.  Do counties with higher social capital and higher values for personal freedom lead to eve worse vaccination outcomes?
 
-The second model adds a vector of controls to the first equation and is given by:
-
-$$
-\begin{aligned}
-Vaccination_{it}=\delta_0+\delta_1(Individual\ Values)_{i,t-7}+\delta_2Social\ Capital_{i,t}+\\ \delta_3(Individual\ Values_{i, t-7}*Social\ Capital_{i,t}) + X_{\eta j}Z_{i,t} + \omega_{i,t}
-\end{aligned}
-$$
-
-where $Z_{i,t}$ represents a vector of socio-demographic proxies. These variables attempt to control for factors that could possibly influence vaccination rates, as well as individual values and social capital. These control variables are median household income, the percentage of a county's adult population with a bachelor's degree, the percentage of a county's population in fair or poor health, the percentage of a county's population who are black, and the percentage of a county population living in a rural area. These socio-demographic measures were taken from the US Census American Community Survey (2019), the Bureau of Economic Analysis, and the Bureau of Labor Statistics. Other controls, like race, poverty and education level also have impacts that support previous research [@townsend_outcomes_2020; @yancy_covid-19_2020].
-
-Our sample dataset consists of 3,139 county-level observations. Table 2 provides the descriptive statistics of these variables.
+Table 2 provides the descriptive statistics of these variables for our sample dataset of 3,139 county-level observations.
 
 [Table 2 Here --- Descriptive Statistics]
 
@@ -129,7 +119,7 @@ Column 1 estimates equation 1 where individual values are the values for public 
 
 All four regressions show statistically significant results and support our initial propositions. Column 1 in Table 3 shows that a one unit increase in the value for public health increases the magnitude of vaccination by 0.010%. The interaction between values for public health and social capital increases the magnitude of vaccination by 0.003%. Column 2 shows that a one unit increase in the value for personal freedom decreases the magnitude of vaccination by 0.5%. A one standard deviation in social capital increases the magnitude of vaccination by 7.4%. The interaction between the value for personal freedom and social capital decreases the magnitude of vaccination by 0.07%. Column 3 of Table 3 specifies the basic model with both measures of individual values, along with both interaction effects. A one unit increase in the values for personal freedom decreases the magnitude of vaccination by 0.51%. A one standard deviation increase in social capital increases the magnitude of vaccination by 6.1%. Moreover, the interaction terms of Column 3 of Table 3 have the expected effect and are statistically significant. The interaction term between social capital and values for public health increases the magnitude of vaccination by 0.002%, and the interaction term between social capital and values for personal freedom decreases the magnitude of vaccination by 0.06%. These results suggest that social capital on net reinforces our values for public health and personal freedom, respectively. 
 
-Column 4 of Table 3---where we use median family income, percent black, and percent over 65 as instruments for social capital---shows the following results.^[We assume that social capital is strongly correlated with these variables, which suggests their inclusion in the basic models is inappropriate; using them as instruments, however, accounts for the endogeneity problem.] A one unit increase in the value for public health increases the magnitude of vaccination by 0.04%. A one unit increase in the value for personal freedom decreases the magnitude of vaccination by 0.35%. The interaction between values for public health and social capital increases the magnitude of vaccination by 0.04%, whereas the interaction between values for personal freedom and social capital decreases the magnitude of vaccination by 0.32%.
+As the values for public health and social capital are correlated with each other---a multicollinearity problem that biases coefficient estimates---Column 4 of Table 3 shows a two-staged least squares model that attenuates this problem. With data from the US Census American Community Survey (2019), the Bureau of Economic Analysis, and the Bureau of Labor Statistics, we use the following variables to instrument for the values for public health: median family income, percent with a bachelor's degree, percent black, percent in poor/fair health, percent rural, and percent over 65.^[This standard technique assumes that the instruments are correlated with values for public health and that they are uncorrelated with the unobservable error term in our basic model.] A one unit increase in the value for public health increases the magnitude of vaccination by 0.04%. A one unit increase in the value for personal freedom decreases the magnitude of vaccination by 0.35%. The interaction between values for public health and social capital increases the magnitude of vaccination by 0.04%, whereas the interaction between values for personal freedom and social capital decreases the magnitude of vaccination by 0.32%.
 
 Our results lend support for the social capital framework discussed above. In particular, it suggests that social capital has an ambiguous effect on vaccination rates. Moreover, social capital mediates the values people have and can amplify those values. Whereas people who value public health---and are more willing to use stringent public health measures---use social capital to have positive effects on the speed and magnitude of vaccination, people who value personal freedom---and who might be more hesitant towards public health---use social capital to have negative effects on the speed and magnitude of vaccination.
 
