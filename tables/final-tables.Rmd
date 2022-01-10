@@ -157,9 +157,9 @@ stargazer::stargazer(
     r2,
     ar2, 
     rse,
-    df_rse,
-    f,
-    df_f
+    # df_rse,
+    f
+    # df_f
     
   ),
   intercept.bottom = FALSE,
