@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA,
 library(tidyverse)
 ```
 
-```{r data-tab2}
+```{r data-tab2, echo=FALSE}
 df <-
   here::here("data", "vax-data.csv") %>%
   read_csv(show_col_types = FALSE) %>% 
@@ -30,7 +30,7 @@ df <-
   as.data.frame()
 ```
 
-```{r tab2, results = 'asis'}
+```{r tab2, results = 'asis', echo=FALSE}
 df %>%
   stargazer::stargazer(
     type = "latex",
@@ -57,7 +57,8 @@ df %>%
       "\\% Rural",
       "\\% > 65",
       "Median Household Income"
-    )
+    ),
+    header = FALSE
   )
 ```
 
