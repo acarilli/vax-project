@@ -39,8 +39,7 @@ data %>%
 ```{r}
 data %>% 
   lm(series_complete_pop_pct ~ stringency_hat * county_level_index + rep_hat * county_level_index,.) %>% 
-  jtools::summ(robust = TRUE, digits = 4, to.file = "pdf")
+  jtools::summ(robust = "HC0", digits = 4, to.file = "pdf")
 ```
 
-```
 
