@@ -1,0 +1,46 @@
+---
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA,
+                      options(digits = 3, scipen = 999))
+library(tidyverse)
+```
+
+```{r}
+data <-
+  here::here("data", "vax-data.csv") %>%
+  read_csv(show_col_types = FALSE) %>% 
+  filter(series_complete_pop_pct != 0) 
+```
+
+```{r rhat}
+data <- 
+data %>% 
+  lm(republican_percent ~ median_household_income +
+      percent_adults_with_ba + 
+      percent_rural + percent_black + percent_65 + county_level_index, .) %>% 
+  modelr::add_predictions(data = data, model = ., var = "rep_hat") 
+
+
+```
+
+
+```{r}
+data <- 
+data %>% 
+  lm(stringency ~ 
+      percent_black + percent_65 + 
+       percent_rural + percent_in_fair_or_poor_health + county_level_index, .) %>% 
+  modelr::add_predictions(data = data, model = ., var = "stringency_hat") 
+```
+
+```{r}
+data %>% 
+  lm(series_complete_pop_pct ~ stringency_hat * county_level_index + rep_hat * county_level_index,.) %>% 
+  jtools::summ(robust = TRUE, digits = 4, to.file = "pdf")
+```
+
+```
+
