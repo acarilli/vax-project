@@ -83,7 +83,7 @@ We measure the columns of Table 1---the level of social capital---using the Join
 
 To visualize how social capital influences vaccine rates across various levels of personal freedom, we compile our data on social capital, the values for personal freedom, and vaccination rates.^[We do not show how vaccine rates change by social capital and values for public health because of the discrete nature of values for public health, which do not easily lend itself to visual interpretation.] Figure 1 shows a random selection of 20% of the counties in our full data, and an initial assessment of our hypotheses. For a given level of social capital, county-level vaccine rates tend to increase as counties have lower values for personal freedom (an upward movement in Figure 1). For a given level of personal freedom within a county, county-level vaccine rates tend to increase with higher levels of social capital (a leftward movement in Figure 1). Finally, county-level vaccine rates tend to increase as counties have lower values for personal freedom *and* higher social capital (an upward and leftward movement in Figure 1).
 
-[[[Figure 1 here]]]
+![Social Capital and Personal Freedom in the United States](figures/figure-1.png)
 
 To provide a more quantitative assessment of our hypotheses, we develop the following model, which specifies the basic functional form between the values people have for personal freedom and/or public health and their social capital:
 
@@ -109,11 +109,17 @@ The interaction term between individual values and social capital allows us to i
 
 Table 2 provides the descriptive statistics of these variables for our sample dataset of 3,139 county-level observations.
 
-[Table 2 Here --- Descriptive Statistics]
+
+```{r table-2, child='tables/table-2.Rmd'}
+
+```
 
 Table 3 presents results for the basic model and subsequent specifications, where the dependent variable is the magnitude of vaccination, i.e., the percentage of county population vaccinated on November 30, 2021.
 
-[Table 3 Here]
+
+```{r table-3, child='tables/table-3.Rmd'}
+
+```
 
 Model 1 estimates equation 1 where individual values are the values for public health; Model 2 estimates equation 1 where individual values are the values for personal freedom; Model 3 estimates equation 1 with both measures of individual values; and Model 4 uses an instrumental variable technique.
 
@@ -129,7 +135,10 @@ Our results lend support for the social capital framework discussed above. In pa
 
 The effect values for public health have on vaccination might be influenced by a particular measure used in its construction. Table 4 shows whether these five components alone have a similar effect on the magnitude of vaccination. We analyze these components using our baseline specification found in Model 1 of Table 3.
 
-[Table 4 here---disaggregated value for public health]
+```{r table-44, child='tables/table-5.Rmd'}
+
+```
+
 
 As we disaggregate the values for public health, each component positively influences the magnitude of vaccination and is statistically significant. Moreover, social capital maintains its statistical significance although it varies in magnitude from 1.2 (when we use the number of days under restrictions on gatherings only) to 8.2 (when we use the number of days under restrictions on restaurants only).
 
