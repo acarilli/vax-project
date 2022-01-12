@@ -6,11 +6,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r child='figures/fig-1.Rmd'}
 
-```
-
-![](figures/figure-1.png)
+![Social Capital and Personal Freedom in the United States](figures/figure-1.png)
 
 ```{r child='tables/table-2.Rmd'}
 
