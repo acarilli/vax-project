@@ -7,7 +7,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-![Social Capital and Personal Freedom in the United States](figures/figure-1.png)
+![Vaccinations, Social Capital, and Personal Freedom](figures/figure-1.png)
 
 ```{r child='tables/table-2.Rmd'}
 

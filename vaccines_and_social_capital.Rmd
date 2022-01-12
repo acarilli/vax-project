@@ -83,7 +83,7 @@ We measure the columns of Table 1---the level of social capital---using the Join
 
 To visualize how social capital influences vaccine rates across various levels of personal freedom, we compile our data on social capital, the values for personal freedom, and vaccination rates.^[We do not show how vaccine rates change by social capital and values for public health because of the discrete nature of values for public health, which do not easily lend itself to visual interpretation.] Figure 1 shows a random selection of 20% of the counties in our full data, and an initial assessment of our hypotheses. For a given level of social capital, county-level vaccine rates tend to increase as counties have lower values for personal freedom (an upward movement in Figure 1). For a given level of personal freedom within a county, county-level vaccine rates tend to increase with higher levels of social capital (a leftward movement in Figure 1). Finally, county-level vaccine rates tend to increase as counties have lower values for personal freedom *and* higher social capital (an upward and leftward movement in Figure 1).
 
-![Social Capital and Personal Freedom in the United States](figures/figure-1.png)
+![Vaccinations, Social Capital, and Personal Freedom](figures/figure-1.png)
 
 To provide a more quantitative assessment of our hypotheses, we develop the following model, which specifies the basic functional form between the values people have for personal freedom and/or public health and their social capital:
 
